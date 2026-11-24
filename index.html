@@ -3,895 +3,368 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Cerebro</title>
-<meta name="description" content="Cerebro uses AI to read the software you already use, clear away what you don't need, and rebuild the interface around what you're trying to do.">
+<title>Cerebro — Complexity Ends Here</title>
+<meta name="description" content="An intelligent interface that transforms complicated software into focused workspaces built around your goals.">
 <meta name="theme-color" content="#070708">
+<link rel="canonical" href="https://abdulhadifarzad0-design.github.io/cerebro-downloads/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Cerebro · Complexity, understood.">
-<meta property="og:description" content="AI that reads complicated software and rebuilds it around what you want to do. Works with Mac apps, web apps and Blender.">
+<meta property="og:site_name" content="Cerebro">
+<meta property="og:title" content="Cerebro — Complexity Ends Here">
+<meta property="og:description" content="An intelligent interface that transforms complicated software into focused workspaces built around your goals.">
 <meta property="og:url" content="https://abdulhadifarzad0-design.github.io/cerebro-downloads/">
 <meta property="og:image" content="https://abdulhadifarzad0-design.github.io/cerebro-downloads/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Cerebro logo: a chrome ring around a glowing crimson core. Complexity ends here.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="icon.png">
+<meta name="twitter:title" content="Cerebro — Complexity Ends Here">
+<meta name="twitter:description" content="An intelligent interface that transforms complicated software into focused workspaces built around your goals.">
+<meta name="twitter:image" content="https://abdulhadifarzad0-design.github.io/cerebro-downloads/assets/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="sitemap.xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/cerebro.css">
+<link rel="stylesheet" href="css/playground.css">
+<link rel="stylesheet" href="css/tech.css">
 <script>
-  /* Runs before first paint: decide whether the activation sequence plays. */
+  /* Before first paint: decide whether the awakening sequence plays and
+     whether the scroll-driven scenes are enabled. */
   (function () {
     var d = document.documentElement, seen = false;
     d.classList.add("js");
-    try { seen = sessionStorage.getItem("cerebro-activated") === "1"; } catch (e) {}
-    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (seen || reduce || /[?&]noboot\b/.test(location.search)) d.classList.add("no-boot");
+    try { seen = sessionStorage.getItem("cerebro-awake") === "1"; } catch (e) {}
+    var mm = function (q) { return window.matchMedia && matchMedia(q).matches; };
+    var reduce = mm("(prefers-reduced-motion: reduce)");
+    if (!reduce && mm("(min-width: 980px) and (min-height: 620px)")) d.classList.add("scrolly");
+    if (seen || reduce || location.hash || /[?&]noboot\b/.test(location.search)) d.classList.add("awake");
     else d.classList.add("booting");
   })();
 </script>
-<style>
-/* ------------------------------------------------------------------
-   Cerebro. Near-black field, white type, one crimson signal.
-   Red only ever means "Cerebro is thinking / active".
-------------------------------------------------------------------- */
-:root {
-  --ground: #070708;
-  --raised: #0d0d0f;
-  --raised-2: #141417;
-  --ink: #ecebe7;
-  --muted: #9b9a96;
-  --faint: #5f5f5c;
-  --line: #1c1c20;
-  --line-2: #26262b;
-  --red: #e0243f;          /* crimson signal */
-  --red-deep: #8f1024;
-  --red-glow: rgba(224, 36, 63, .45);
-  --ok: #6cc795;
-  --warn: #d8ad62;
-  --display: "Outfit", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --body: "IBM Plex Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --ease: cubic-bezier(.16, 1, .3, 1);      /* expo out: arrivals */
-  --ease-io: cubic-bezier(.7, 0, .2, 1);    /* deliberate moves */
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-::selection { background: var(--red); color: #fff; }
-a { color: var(--ink); }
-a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 10px; }
-img { max-width: 100%; }
-.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
-
-/* ---------- emblem (the logo's ring + core) ---------- */
-.emblem { display: block; overflow: visible; color: var(--ink); }
-.emblem .ring { fill: none; stroke: var(--ink); stroke-width: 7; }
-.emblem .core { fill: var(--ink); }
-.emblem.live { --core: var(--red); }
-
-/* ---------- activation sequence ---------- */
-#boot { display: none; position: fixed; inset: 0; z-index: 100; place-items: center; background: #030304; transition: background-color .7s var(--ease-io); }
-.booting #boot { display: grid; }
-.booting body { overflow: hidden; }
-#boot.leaving { background-color: rgba(3,3,4,0); pointer-events: none; }
-.boot-stage { position: relative; width: 112px; height: 112px; }
-.boot-glow { position: absolute; left: 50%; top: 50%; width: 420px; height: 420px; margin: -210px 0 0 -210px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(224,36,63,.55) 0%, rgba(160,16,40,.22) 22%, rgba(120,10,30,.06) 45%, transparent 66%);
-  opacity: 0; transform: scale(.35); will-change: transform, opacity;
-  animation: glow 2.3s var(--ease-io) .25s forwards; }
-@keyframes glow {
-  0%   { opacity: 0;   transform: scale(.35); }
-  22%  { opacity: .35; transform: scale(.55); }
-  36%  { opacity: .2;  transform: scale(.5); }
-  52%  { opacity: .55; transform: scale(.7); }
-  70%  { opacity: 1;   transform: scale(1.05); }   /* surge */
-  100% { opacity: .42; transform: scale(.8); }      /* settle */
-}
-.boot-mark { position: absolute; inset: 0; opacity: 0; will-change: transform, opacity; animation: power 1.7s var(--ease) .1s forwards; }
-.boot-mark svg { width: 100%; height: 100%; }
-.boot-mark .core { animation: core 2s ease-in-out .3s forwards; }
-@keyframes power { 0% { opacity: 0; } 30% { opacity: .16; } 55% { opacity: .3; } 100% { opacity: 1; } }
-@keyframes core { 0% { fill: #3a3a3a; } 35% { fill: #6b1220; } 55% { fill: #b81a33; } 70% { fill: #ff3552; } 100% { fill: var(--red); } }
-.scan { position: absolute; left: 50%; top: 50%; width: 112px; height: 112px; margin: -56px 0 0 -56px; border-radius: 50%; border: 1px solid rgba(236,235,231,.5); opacity: 0; transform: scale(.6); will-change: transform, opacity; animation: scan 1.9s cubic-bezier(.2,.6,.3,1) forwards; }
-.scan.s1 { animation-delay: .75s; } .scan.s2 { animation-delay: 1.05s; border-color: rgba(224,36,63,.6); } .scan.s3 { animation-delay: 1.35s; }
-@keyframes scan { 0% { opacity: 0; transform: scale(.6); } 12% { opacity: .55; } 100% { opacity: 0; transform: scale(6.5); } }
-.boot-readout { position: absolute; left: 50%; top: calc(100% + 44px); transform: translateX(-50%); white-space: nowrap; font-family: var(--mono); font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: var(--faint); opacity: 0; animation: readout 1.2s var(--ease) 1.45s forwards; }
-.boot-readout b { color: var(--red); font-weight: 500; }
-@keyframes readout { from { opacity: 0; letter-spacing: .5em; } to { opacity: 1; letter-spacing: .32em; } }
-#boot.leaving .boot-glow, #boot.leaving .scan, #boot.leaving .boot-readout { transition: opacity .35s; opacity: 0 !important; }
-.boot-skip { position: absolute; right: 22px; bottom: max(20px, env(safe-area-inset-bottom)); font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); background: none; border: 0; cursor: pointer; padding: 8px; opacity: 0; animation: readout .6s ease .6s forwards; }
-
-/* ---------- header ---------- */
-.top { position: sticky; top: 0; z-index: 20; background: rgba(7,7,8,.72); backdrop-filter: saturate(140%) blur(14px); -webkit-backdrop-filter: saturate(140%) blur(14px); border-bottom: 1px solid transparent; transition: border-color .4s, opacity .6s var(--ease); }
-.top.scrolled { border-bottom-color: var(--line); }
-.booting .top { opacity: 0; }
-.top .wrap { display: flex; align-items: center; gap: 24px; padding-block: 14px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-.brand-mark { position: relative; width: 20px; height: 20px; }
-.brand-mark svg { width: 20px; height: 20px; }
-.brand-mark::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; background: radial-gradient(circle, var(--red-glow), transparent 62%); opacity: .5; animation: breathe 4.8s ease-in-out infinite; pointer-events: none; }
-@keyframes breathe { 0%,100% { opacity: .25; transform: scale(.85); } 50% { opacity: .7; transform: scale(1.1); } }
-.booting .brand-mark { opacity: 0; }
-.brand img { height: 14px; width: auto; display: block; }
-.top nav { position: relative; display: flex; gap: 6px; margin-left: auto; align-items: center; }
-.top nav a { position: relative; color: var(--muted); text-decoration: none; font-size: 14.5px; padding: 7px 12px; border-radius: 999px; transition: color .3s var(--ease); }
-.top nav a:hover, .top nav a.active { color: var(--ink); }
-.nav-ind { position: absolute; left: 0; bottom: 1px; height: 1px; width: 0; background: var(--red); box-shadow: 0 0 8px var(--red-glow); opacity: 0; transition: transform .55s var(--ease), width .55s var(--ease), opacity .3s; pointer-events: none; }
-.top nav a.get { margin-left: 10px; color: #0a0a0b; background: var(--ink); font-weight: 500; padding: 7px 16px; transition: background .3s, box-shadow .4s var(--ease); }
-.top nav a.get:hover { background: #fff; box-shadow: 0 0 0 1px rgba(224,36,63,.5), 0 0 22px rgba(224,36,63,.35); }
-.progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--red) 70%, #ff6b80); transform-origin: 0 50%; transform: scaleX(0); opacity: .8; pointer-events: none; }
-
-/* ---------- reveal on scroll ---------- */
-.js [data-reveal] { opacity: 0; transform: translate3d(0, 22px, 0); transition: opacity 1s var(--ease), transform 1.1s var(--ease); transition-delay: calc(var(--d, 0) * 80ms); }
-.js [data-reveal].in { opacity: 1; transform: none; }
-
-/* ---------- hero ---------- */
-.hero { position: relative; min-height: min(860px, calc(100svh - 52px)); display: flex; align-items: center; padding-block: 64px 72px; overflow: hidden; isolation: isolate; }
-.hero::before { content: ""; position: absolute; inset: 0; z-index: -2; background:
-  radial-gradient(60% 70% at 78% 45%, rgba(224,36,63,.07), transparent 60%),
-  radial-gradient(80% 60% at 50% 120%, rgba(255,255,255,.03), transparent 60%); }
-.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line-2) 20%, var(--line-2) 80%, transparent); }
-#neural { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; display: block; pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.55) 35%, #000 60%);
-          mask-image: linear-gradient(90deg, rgba(0,0,0,.25) 0%, rgba(0,0,0,.55) 35%, #000 60%); }
-.hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: 56px; align-items: center; width: 100%; }
-.hero-copy { display: grid; gap: 26px; justify-items: start; }
-.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; padding: 6px 12px 6px 10px; border: 1px solid var(--line-2); border-radius: 999px; background: rgba(255,255,255,.02); }
-.eyebrow .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 3px rgba(224,36,63,.18); animation: blink 2.4s ease-in-out infinite; }
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
-.wordmark { width: min(520px, 100%); height: auto; display: block; }
-h1 { font-family: var(--display); font-weight: 200; font-size: clamp(40px, 6.2vw, 80px); line-height: 1; letter-spacing: -.035em; margin: 0; }
-h1 em { font-style: normal; font-weight: 400; background: linear-gradient(180deg, #fff 20%, #b9b8b4); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.lede { font-size: clamp(17px, 1.8vw, 19.5px); color: var(--muted); max-width: 50ch; margin: 0; line-height: 1.55; }
-.ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
-
-/* buttons */
-.btn { position: relative; display: inline-flex; align-items: center; gap: 11px; padding: 13px 22px; border-radius: 999px; font: 500 15.5px/1.2 var(--body); text-decoration: none; border: 1px solid var(--line-2); color: var(--ink); background: rgba(255,255,255,.02); cursor: pointer;
-  transition: background .35s var(--ease), border-color .35s var(--ease), box-shadow .5s var(--ease), transform .35s var(--ease), color .3s; }
-.btn:hover { border-color: rgba(224,36,63,.45); background: rgba(224,36,63,.06); box-shadow: 0 0 24px rgba(224,36,63,.12); }
-.btn:active { transform: scale(.98); }
-.btn.primary { background: var(--ink); color: #0a0a0b; border-color: transparent; }
-.btn.primary:hover { background: #fff; box-shadow: 0 0 0 1px rgba(224,36,63,.65), 0 10px 40px -6px rgba(224,36,63,.55), 0 0 70px -10px rgba(224,36,63,.5); }
-.btn .mini { width: 16px; height: 16px; flex: none; }
-.btn .mini { color: currentColor; --sw: 9; }
-.btn:hover .mini { --core: var(--red); }
-.btn .mini { transition: filter .4s var(--ease), transform .6s var(--ease); }
-.btn.primary:hover .mini { filter: drop-shadow(0 0 5px rgba(224,36,63,.9)); transform: rotate(90deg); }
-.btn .arrow { transition: transform .4s var(--ease); }
-.btn:hover .arrow { transform: translateX(3px); }
-
-/* ---------- console (request → workspace) ---------- */
-.console { position: relative; border: 1px solid var(--line-2); border-radius: 22px; background: linear-gradient(180deg, rgba(20,20,23,.88), rgba(10,10,12,.92)); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 40px 120px -30px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.04); padding: 18px; min-width: 0; }
-.console-head { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); padding: 2px 4px 14px; }
-.console-head svg { width: 14px; height: 14px; color: var(--muted); }
-.console.thinking .console-head svg, .console.done .console-head svg { --core: var(--red); }
-.console-head .state { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
-.console-head .state i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); transition: background .3s, box-shadow .3s; }
-.console.thinking .console-head .state i, .console.done .console-head .state i { background: var(--red); box-shadow: 0 0 10px var(--red); }
-.console.thinking .console-head .state i { animation: blink .7s ease-in-out infinite; }
-.ask { position: relative; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); border-radius: 14px; background: #08080a; padding: 6px 6px 6px 16px; transition: border-color .4s var(--ease), box-shadow .5s var(--ease); }
-.ask:focus-within, .console.thinking .ask { border-color: rgba(224,36,63,.55); box-shadow: 0 0 0 4px rgba(224,36,63,.08), 0 0 34px -6px rgba(224,36,63,.35); }
-.ask input { flex: 1; min-width: 0; background: none; border: 0; color: var(--ink); font: 400 16px/1.4 var(--body); padding: 10px 0; outline: none; }
-.ask input::placeholder { color: var(--faint); }
-.ask button { flex: none; width: 40px; height: 40px; border-radius: 10px; border: 0; background: var(--ink); color: #0a0a0b; display: grid; place-items: center; cursor: pointer; transition: background .3s, box-shadow .4s var(--ease), transform .3s var(--ease); }
-.ask button:hover { background: #fff; box-shadow: 0 0 20px rgba(224,36,63,.45); }
-.ask button:active { transform: scale(.94); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
-.chip { font: 400 13px/1 var(--body); color: var(--muted); border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 8px 12px; cursor: pointer; transition: color .3s, border-color .3s, background .3s; }
-.chip:hover { color: var(--ink); border-color: rgba(224,36,63,.4); background: rgba(224,36,63,.05); }
-.chip.nudge { animation: nudge 1.2s var(--ease); }
-@keyframes nudge { 30% { border-color: rgba(224,36,63,.7); color: var(--ink); } }
-.wire { position: relative; height: 1px; margin: 16px 2px; background: var(--line-2); overflow: hidden; }
-.wire::after { content: ""; position: absolute; top: -1px; left: 0; width: 28%; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, var(--red-deep) 30%, var(--red) 80%, #ff4d66); box-shadow: 0 0 12px var(--red); transform: translateX(-110%); opacity: 0; }
-.console.thinking .wire::after { opacity: 1; animation: travel 1.05s var(--ease-io) infinite; }
-@keyframes travel { from { transform: translateX(-110%); } to { transform: translateX(400%); } }
-.readout { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-family: var(--mono); font-size: 12px; color: var(--faint); min-height: 20px; padding: 0 4px; }
-.readout b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
-.readout .kept b { color: var(--red); }
-.tools { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; min-height: 236px; }
-.tools li { display: grid; grid-template-columns: 22px 1fr auto; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.015); font-size: 14.5px;
-  opacity: 0; transform: translate3d(0, 8px, 0) scale(.99); animation: toolIn .7s var(--ease) forwards; animation-delay: calc(var(--i) * 90ms); }
-@keyframes toolIn { to { opacity: 1; transform: none; } }
-.tools li .n { font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
-.tools .empty { display: grid; place-items: center; text-align: center; color: var(--faint); font-size: 14px; border: 1px dashed var(--line-2); background: none; grid-template-columns: 1fr; min-height: 236px; animation: none; opacity: 1; transform: none; padding: 24px; }
-.console-foot { margin: 12px 4px 0; font-size: 12px; color: var(--faint); line-height: 1.5; }
-.pill { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; letter-spacing: .02em; }
-.pill.verified { color: var(--ok); background: rgba(108,199,149,.1); }
-.pill.live { color: #ff5a70; background: rgba(224,36,63,.12); }
-.pill.guide { color: var(--warn); background: rgba(216,173,98,.11); }
-
-/* ---------- sections ---------- */
-section { position: relative; padding-block: 112px; }
-section + section::before { content: ""; position: absolute; top: 0; left: 50%; width: min(1180px, calc(100% - 40px)); transform: translateX(-50%); height: 1px; background: linear-gradient(90deg, transparent, var(--line-2) 15%, var(--line-2) 85%, transparent); }
-.kicker { display: inline-flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
-.kicker .line { position: relative; width: 36px; height: 1px; background: var(--line-2); overflow: hidden; }
-.kicker .line::after { content: ""; position: absolute; inset: 0; width: 40%; background: var(--red); box-shadow: 0 0 6px var(--red); transform: translateX(-120%); }
-.kicker.in .line::after { animation: kick 1.4s var(--ease-io) .2s forwards; }
-@keyframes kick { 0% { transform: translateX(-120%); } 70% { transform: translateX(260%); } 100% { transform: translateX(150%); } }
-h2 { font-family: var(--display); font-weight: 200; font-size: clamp(32px, 4.6vw, 56px); letter-spacing: -.03em; line-height: 1.04; margin: 0 0 18px; max-width: 20ch; text-wrap: balance; }
-h2 strong { font-weight: 400; }
-.sub { color: var(--muted); max-width: 60ch; margin: 0 0 48px; font-size: 18px; }
-
-/* interactive cards: soft crimson light follows the pointer */
-.card { position: relative; background: var(--raised); border: 1px solid var(--line); border-radius: 20px; padding: 28px; min-width: 0; transform-style: preserve-3d; transition: border-color .5s var(--ease), transform .7s var(--ease), background .5s; }
-.card::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(224,36,63,.10), transparent 45%); }
-.card::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .5s var(--ease);
-  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(224,36,63,.55), transparent 60%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-.card:hover::before, .card:hover::after { opacity: 1; }
-.card:hover { border-color: var(--line-2); }
-
-/* proof */
-.proof-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
-.nums { display: flex; gap: 48px; flex-wrap: wrap; }
-.num { font-family: var(--display); font-weight: 200; font-size: clamp(46px, 6vw, 76px); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-.num.kept { color: var(--red); font-weight: 300; text-shadow: 0 0 30px rgba(224,36,63,.35); }
-.num-label { font-family: var(--mono); font-size: 11.5px; color: var(--faint); margin-top: 10px; text-transform: uppercase; letter-spacing: .1em; }
-.compare { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line-2); background: #0b0b0b; aspect-ratio: 1600 / 907; user-select: none; box-shadow: 0 50px 120px -40px rgba(0,0,0,.9); }
-.compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.compare .after { clip-path: inset(0 0 0 var(--pos, 50%)); }
-.handle { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 1px; background: var(--red); box-shadow: 0 0 14px var(--red); transform: translateX(-.5px); pointer-events: none; }
-.handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--ink); background: radial-gradient(circle, var(--red) 0 6px, rgba(7,7,8,.85) 7px); box-shadow: 0 0 0 6px rgba(7,7,8,.35), 0 0 30px rgba(224,36,63,.45); }
-.tag { position: absolute; top: 14px; padding: 5px 11px; border-radius: 999px; font-family: var(--mono); font-size: 11.5px; background: rgba(7,7,8,.82); color: var(--ink); pointer-events: none; backdrop-filter: blur(6px); }
-.tag.l { left: 14px; } .tag.r { right: 14px; }
-.compare input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
-.compare.intro .after, .compare.intro .handle { transition: clip-path 1.2s var(--ease-io), left 1.2s var(--ease-io); }
-.caption { color: var(--faint); font-size: 14px; margin-top: 14px; }
-
-/* downloads */
-.downloads { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.dl { display: grid; gap: 14px; align-content: start; }
-.dl.main { background: linear-gradient(165deg, rgba(224,36,63,.09), var(--raised) 55%); border-color: rgba(224,36,63,.22); }
-.dl h3 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0; letter-spacing: -.01em; }
-.dl p { margin: 0; color: var(--muted); font-size: 15px; }
-.meta { font-family: var(--mono); font-size: 11.5px; color: var(--faint); letter-spacing: .02em; }
-.dl ol { margin: 0; padding-left: 18px; color: var(--muted); font-size: 14px; display: grid; gap: 4px; }
-.dl .btn { justify-self: start; margin-top: 4px; }
-.dl code, .note code { font-family: var(--mono); font-size: 12.5px; background: var(--raised-2); padding: 1px 6px; border-radius: 6px; color: var(--ink); }
-.note { margin-top: 24px; color: var(--faint); font-size: 14px; max-width: 80ch; }
-
-/* steps */
-.how { display: grid; grid-template-columns: 1fr 320px; gap: 64px; align-items: start; }
-.steps { list-style: none; padding: 0; margin: 0; display: grid; position: relative; }
-.steps li { position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 18px; padding-block: 24px; border-bottom: 1px solid var(--line); min-width: 0; }
-.steps li:first-child { padding-top: 0; }
-.step-n { font-family: var(--mono); font-size: 12px; color: var(--faint); padding-top: 8px; letter-spacing: .08em; transition: color .5s; }
-.steps li.in .step-n { color: var(--red); }
-.steps h3 { margin: 2px 0 6px; font-family: var(--display); font-weight: 400; font-size: 21px; letter-spacing: -.01em; }
-.steps p { margin: 0; color: var(--muted); }
-.goal { font-family: var(--mono); font-size: 12.5px; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 10px; color: var(--ink); white-space: nowrap; }
-.panel-shot { width: 100%; height: auto; border-radius: 22px; border: 1px solid var(--line-2); box-shadow: 0 40px 100px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.4); display: block; position: sticky; top: 96px; }
-
-/* trust */
-.badges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.badge .pill { margin-bottom: 18px; }
-.badge h3 { font-family: var(--display); font-weight: 400; font-size: 20px; margin: 0 0 6px; }
-.badge p { margin: 0; color: var(--muted); font-size: 15px; }
-
-/* coverage */
-.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; background: var(--raised); }
-table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 15px; }
-th, td { text-align: left; padding: 18px 22px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-family: var(--mono); font-weight: 400; font-size: 11.5px; text-transform: uppercase; letter-spacing: .1em; color: var(--faint); }
-tbody tr { transition: background .35s var(--ease); }
-tbody tr:hover { background: rgba(224,36,63,.035); }
-tbody tr:hover td.n { color: var(--red); }
-tr:last-child td { border-bottom: 0; }
-td.n { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; transition: color .35s; }
-td small { display: block; color: var(--faint); font-size: 13px; }
-td { color: var(--muted); } td strong { color: var(--ink); font-weight: 500; }
-
-/* safety */
-.rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 48px; list-style: none; padding: 0; margin: 0; }
-.rules li { min-width: 0; }
-.rules .glyph { width: 22px; height: 22px; margin-bottom: 16px; }
-.rules .glyph { color: var(--muted); transition: color .4s var(--ease); }
-.rules li:hover .glyph { color: var(--ink); --core: var(--red); }
-.rules strong { display: block; font-family: var(--display); font-weight: 400; font-size: 19px; margin-bottom: 4px; }
-.rules span { color: var(--muted); font-size: 15px; }
-
-/* status */
-.status { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.status h3 { font-family: var(--display); font-weight: 400; margin: 0 0 14px; font-size: 20px; display: flex; align-items: center; gap: 10px; }
-.status h3 i { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
-.status .next h3 i { background: var(--faint); }
-.status ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; }
-
-/* closing CTA */
-.closer { text-align: center; padding-block: 140px 120px; overflow: hidden; }
-.closer .wrap { display: grid; justify-items: center; gap: 26px; }
-.closer h2 { margin: 0; max-width: 18ch; }
-.closer-mark { position: relative; width: 64px; height: 64px; }
-.closer-mark svg { width: 100%; height: 100%; }
-.closer-mark .halo { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; border: 1px solid rgba(224,36,63,.5); opacity: 0; }
-.closer.in .closer-mark .halo { animation: halo 3.6s cubic-bezier(.2,.6,.3,1) infinite; }
-.closer.in .closer-mark .halo:nth-child(2) { animation-delay: 1.2s; }
-.closer.in .closer-mark .halo:nth-child(3) { animation-delay: 2.4s; }
-@keyframes halo { 0% { opacity: 0; transform: scale(1); } 15% { opacity: .6; } 100% { opacity: 0; transform: scale(4.2); } }
-
-footer { border-top: 1px solid var(--line); padding-block: 40px 56px; }
-footer .wrap { display: flex; gap: 24px; justify-content: space-between; align-items: center; flex-wrap: wrap; color: var(--faint); font-size: 14px; }
-footer .brand img { height: 12px; opacity: .85; }
-footer a { color: var(--muted); text-decoration: none; transition: color .3s; }
-footer a:hover { color: var(--ink); }
-
-@media (max-width: 980px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
-  .hero { min-height: 0; padding-block: 48px 64px; }
-  #neural { -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.35), #000 70%); mask-image: linear-gradient(180deg, rgba(0,0,0,.35), #000 70%); }
-  .how { grid-template-columns: 1fr; }
-  .panel-shot { max-width: 320px; position: static; }
-  .downloads, .badges, .status { grid-template-columns: 1fr; }
-  .rules { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 600px) {
-  .rules { grid-template-columns: 1fr; }
-  .top nav a.opt { display: none; }
-  .eyebrow .plat { display: none; }
-  section { padding-block: 80px; }
-  .card { padding: 22px; }
-  .tools, .tools .empty { min-height: 0; }
-  .nums { gap: 32px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
-  .js [data-reveal] { opacity: 1; transform: none; }
-}
-</style>
-<noscript><style>#boot { display: none !important; } .top, .brand-mark { opacity: 1 !important; }</style></noscript>
+<script defer src="js/core.js"></script>
+<script defer src="js/apps.js"></script>
+<script defer src="js/appwindow.js"></script>
+<script defer src="js/playground.js"></script>
+<script defer src="js/tech.js"></script>
+<script defer src="js/main.js"></script>
+<noscript><style>.js-only { display: none !important; } .reveal, .xp-hero > * { opacity: 1 !important; transform: none !important; }</style></noscript>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" style="fill:none;stroke:var(--ring,currentColor);stroke-width:var(--sw,7)"/><circle cx="50" cy="50" r="13" style="fill:var(--core,currentColor);transition:fill .35s"/></symbol>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="markChrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#9a9ca1"/><stop offset=".55" stop-color="#e6e7e9"/><stop offset="1" stop-color="#6f7176"/></linearGradient>
+    <radialGradient id="markCore" cx=".42" cy=".38" r=".7"><stop offset="0" stop-color="#ffb3bd"/><stop offset=".35" stop-color="#ff3b57"/><stop offset="1" stop-color="#8f1024"/></radialGradient>
+  </defs>
+  <symbol id="mark" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="url(#markChrome)" stroke-width="8"/><circle cx="50" cy="50" r="14" fill="url(#markCore)"/></symbol>
 </svg>
 
-<div id="boot" aria-hidden="true">
-  <div class="boot-stage">
-    <div class="boot-glow"></div>
-    <div class="scan s1"></div><div class="scan s2"></div><div class="scan s3"></div>
-    <div class="boot-mark"><svg class="emblem" viewBox="0 0 100 100"><circle class="ring" cx="50" cy="50" r="40"/><circle class="core" cx="50" cy="50" r="13"/></svg></div>
-    <div class="boot-readout">Cerebro <b>online</b></div>
-  </div>
-  <button class="boot-skip" type="button" tabindex="-1">Skip</button>
-</div>
-
-<header class="top" id="header">
-  <div class="wrap">
-    <a class="brand" href="#top" aria-label="Cerebro home">
-      <span class="brand-mark" id="brand-mark"><svg class="emblem live" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg></span>
-      <img src="assets/wordmark.png" width="811" height="133" alt="Cerebro">
+<header class="nav" id="nav">
+  <div class="nav-pill">
+    <a class="nav-brand" href="#top" aria-label="Cerebro, back to top">
+      <svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
+      <img src="assets/wordmark.png" width="811" height="133" alt="">
     </a>
-    <nav aria-label="Sections" id="nav">
-      <a class="opt" href="#proof">Proof</a>
-      <a class="opt" href="#how">How it works</a>
-      <a class="opt" href="#apps">Apps</a>
-      <a class="opt" href="#safety">Safety</a>
-      <a class="get" href="#download">Download</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#playground" data-nav="playground">Experience</a>
+      <a href="#technology" data-nav="technology">Technology</a>
+      <a href="#applications" data-nav="applications">Applications</a>
       <span class="nav-ind" aria-hidden="true"></span>
     </nav>
+    <a class="nav-cta" href="#download"><span>Download</span></a>
+    <button class="nav-menu" id="nav-menu" type="button" aria-expanded="false" aria-controls="nav-sheet"><span class="sr-only">Menu</span><i></i><i></i></button>
   </div>
-  <div class="progress" id="progress"></div>
+  <div class="nav-sheet" id="nav-sheet" hidden>
+    <a href="#playground">Experience</a>
+    <a href="#technology">Technology</a>
+    <a href="#applications">Applications</a>
+    <a href="#download">Download</a>
+  </div>
 </header>
 
-<main id="top">
-  <div class="hero">
-    <canvas id="neural" aria-hidden="true"></canvas>
-    <div class="wrap hero-grid">
-      <div class="hero-copy">
-        <span class="eyebrow" data-reveal style="--d:0"><span class="live-dot"></span>Early access · v0.1.0<span class="plat"> · macOS · Chrome · Blender</span></span>
-        <img class="wordmark" src="assets/wordmark.png" width="811" height="133" alt="Cerebro" data-reveal style="--d:1">
-        <h1 data-reveal style="--d:2">Complexity, <em>understood.</em></h1>
-        <p class="lede" data-reveal style="--d:3">Cerebro uses AI to read the software you already use, clear away the clutter, and rebuild the interface around what you’re actually trying to do. Its buttons operate the real app.</p>
-        <div class="ctas" data-reveal style="--d:4">
-          <a class="btn primary" href="#download"><svg class="mini emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
-          <a class="btn" href="#proof">See it work <span class="arrow" aria-hidden="true">→</span></a>
+<main id="main">
+  <span id="top"></span>
+
+  <!-- 1–3. Awakening, hero, and the transformation, in one continuous scene -->
+  <section id="experience" class="xp" aria-labelledby="xp-title">
+    <div class="xp-stage" id="xp-stage">
+      <div class="xp-atmo" aria-hidden="true"><i class="xp-beam"></i><i class="xp-pool"></i><i class="xp-grain"></i></div>
+
+      <div class="xp-core" id="xp-core" aria-hidden="true">
+        <canvas class="core-canvas" id="core-hero"></canvas>
+      </div>
+      <p class="xp-online status" id="xp-online" aria-hidden="true"><i></i>Cerebro online</p>
+
+      <div class="xp-hero" id="xp-hero">
+        <h1 class="xp-title" id="xp-title"><span>Complexity</span> <span class="chrome-text">ends here.</span></h1>
+        <p class="xp-slogan">One intelligence. Every interface.</p>
+        <p class="xp-desc">Cerebro understands the software you use and transforms complicated interfaces into focused workspaces built around what you want to accomplish.</p>
+        <div class="xp-ctas">
+          <a class="btn btn-primary" href="#download"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
+          <a class="btn" href="#playground">Experience the demo <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
 
-      <div class="console" id="console" data-reveal style="--d:3">
-        <div class="console-head">
-          <svg class="emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>
-          Preview
-          <span class="state" aria-live="polite"><i></i><span id="state-text">Ready</span></span>
+      <div class="xp-enter" id="xp-enter">
+        <div class="xp-windows" id="xp-windows" aria-hidden="true">
+          <div class="xp-win" data-app="blender"></div>
+          <div class="xp-win" data-app="numbers"></div>
+          <div class="xp-win" data-app="photopea"></div>
         </div>
-        <form class="ask" id="ask" autocomplete="off">
-          <label for="ask-input" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">What do you want to do?</label>
-          <input id="ask-input" type="text" placeholder="What do you want to do?" maxlength="80">
-          <button type="submit" aria-label="Ask Cerebro"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        </form>
-        <div class="chips" id="chips">
-          <button class="chip" type="button" data-goal="Model a coffee mug">Model a coffee mug</button>
-          <button class="chip" type="button" data-goal="Make a monthly budget">Make a monthly budget</button>
-          <button class="chip" type="button" data-goal="Crop a photo">Crop a photo</button>
-          <button class="chip" type="button" data-goal="Write a letter">Write a letter</button>
-        </div>
-        <div class="wire" aria-hidden="true"></div>
-        <div class="readout" id="readout"><span>Waiting for a goal</span><span></span></div>
-        <ul class="tools" id="tools" aria-live="polite"><li class="empty">Pick an example or type a goal. Cerebro reads the app, then keeps only what you need.</li></ul>
-        <p class="console-foot">Illustrative preview in your browser. The app builds your workspace live from the controls it finds in the app you have open.</p>
       </div>
+
+      <div class="xp-chapter" id="xp-chapter">
+        <h2 class="xp-chapter-title">Same software. <span>An entirely different experience.</span></h2>
+        <div class="xp-goals" id="xp-goals" role="group" aria-label="Choose a goal for Blender">
+          <span class="xp-goals-l">Goal</span>
+        </div>
+        <div class="xp-flatwin" id="xp-flatwin"></div>
+      </div>
+
+      <ol class="xp-steps" id="xp-steps" aria-label="What Cerebro does">
+        <li><b>01</b>Examining the interface</li>
+        <li><b>02</b>Scanning every control</li>
+        <li><b>03</b>Illuminating what matters</li>
+        <li><b>04</b>Clearing the rest</li>
+        <li><b>05</b>Assembling your workspace</li>
+        <li><b>06</b>Ready to use</li>
+      </ol>
+      <p class="xp-note" id="xp-note">Illustration of how Cerebro works · real captures below</p>
+      <div class="xp-cue" id="xp-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
+      <button class="xp-skip" id="xp-skip" type="button">Skip intro</button>
     </div>
-  </div>
+  </section>
 
-  <section id="proof">
+  <!-- 3b. Real capture -->
+  <section id="real" class="real" aria-labelledby="real-title">
     <div class="wrap">
-      <div class="proof-head">
-        <div>
-          <div class="kicker" data-reveal><span class="line"></span>Real screenshots · Blender 5.3</div>
-          <h2 data-reveal style="--d:1">Same app. <strong>Less in the way.</strong></h2>
-        </div>
-        <div class="nums" data-reveal style="--d:2">
-          <div><div class="num" data-count="1207">1,207</div><div class="num-label">operations found</div></div>
-          <div><div class="num kept">1</div><div class="num-label">focused workspace</div></div>
-        </div>
+      <div class="real-head">
+        <p class="status reveal"><i></i>Real capture · Blender 5.3</p>
+        <h2 id="real-title" class="reveal">Not a mockup. <span>The real thing.</span></h2>
+        <p class="real-lede reveal">Cerebro hid these panels through Blender’s own API and brought every one back with a single click. Drag to compare.</p>
       </div>
-      <div class="compare intro" id="compare" style="--pos: 50%" data-reveal>
+      <div class="compare reveal" id="compare" style="--pos: 50%">
         <img src="assets/blender-original.jpg" width="1600" height="907" loading="lazy" decoding="async" alt="Blender with its full interface: toolbars, outliner, properties and timeline">
         <img class="after" src="assets/blender-cerebro.jpg" width="1600" height="907" loading="lazy" decoding="async" alt="The same Blender scene simplified by Cerebro: only the 3D viewport remains">
-        <div class="handle" aria-hidden="true"></div>
-        <span class="tag l">Original</span>
-        <span class="tag r">With Cerebro</span>
+        <div class="compare-handle" aria-hidden="true"></div>
+        <span class="compare-tag l">Original</span>
+        <span class="compare-tag r">With Cerebro</span>
         <input id="compare-range" type="range" min="0" max="100" value="50" aria-label="Drag to compare Blender before and after Cerebro">
       </div>
-      <p class="caption" data-reveal>Cerebro hid these panels through Blender’s own API, and brought every one back with a single click.</p>
+      <dl class="real-facts reveal">
+        <div><dt>1,207</dt><dd>operations Cerebro found in Blender</dd></div>
+        <div><dt class="r">1</dt><dd>focused workspace on screen</dd></div>
+        <div><dt>1 click</dt><dd>to bring the full interface back</dd></div>
+      </dl>
     </div>
   </section>
 
-  <section id="download">
+  <!-- 4. Universal application showcase -->
+  <section id="applications" class="apps" aria-labelledby="apps-title">
     <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>Download</div>
-      <h2 data-reveal style="--d:1">Activate <strong>Cerebro.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">Start with the Mac app. Add the Chrome extension for websites and the Blender plugin for 3D work.</p>
-      <div class="downloads">
-        <div class="dl card main" data-reveal style="--d:0">
-          <span class="meta">macOS · Apple Silicon · 114 MB</span>
-          <h3>Cerebro for Mac</h3>
-          <p>The floating Cerebro panel. Works with Numbers, Pages, Keynote, TextEdit and most other Mac apps.</p>
-          <ol>
-            <li>Unzip and move Cerebro to Applications.</li>
-            <li>Open it. If macOS says it can’t verify Cerebro, click Done, then open System Settings › Privacy &amp; Security and click Open Anyway.</li>
-            <li>Allow Accessibility when Cerebro asks.</li>
-          </ol>
-          <a class="btn primary" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-macOS-arm64.zip" target="_blank" rel="noopener"><svg class="mini emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Download .zip</a>
-        </div>
-        <div class="dl card" data-reveal style="--d:1">
-          <span class="meta">Chrome, Brave, Edge · 180 KB</span>
-          <h3>Chrome extension</h3>
-          <p>Simplifies web apps like Excalidraw and Photopea right on the page.</p>
-          <ol>
-            <li>Unzip the file.</li>
-            <li>Open <code>chrome://extensions</code>, turn on Developer mode.</li>
-            <li>Click Load unpacked and pick the folder.</li>
-          </ol>
-          <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-Chrome-Extension.zip" target="_blank" rel="noopener">Download .zip</a>
-        </div>
-        <div class="dl card" data-reveal style="--d:2">
-          <span class="meta">Blender 4.2 or later · 6 KB</span>
-          <h3>Blender plugin</h3>
-          <p>Gives Cerebro direct, verified control of Blender’s own operations.</p>
-          <ol>
-            <li>In Blender, open Edit › Preferences.</li>
-            <li>Get Extensions › Install from Disk.</li>
-            <li>Choose the downloaded .zip.</li>
-          </ol>
-          <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/cerebro_bridge-0.1.0.zip" target="_blank" rel="noopener">Download .zip</a>
+      <header class="sec-head">
+        <h2 id="apps-title" class="reveal">One intelligence. <span>Limitless applications.</span></h2>
+        <p class="reveal">The same engine reads very different software. Choose an app and watch its interface reorganise around a goal.</p>
+      </header>
+      <div class="apps-ui">
+        <div class="apps-rail" id="apps-rail" role="tablist" aria-label="Applications"></div>
+        <div class="apps-stage">
+          <div class="apps-win" id="apps-win"></div>
+          <div class="apps-info" id="apps-info" role="tabpanel" aria-live="polite">
+            <div class="apps-col">
+              <span class="apps-k">Goal</span>
+              <p class="apps-goal" id="apps-goal"></p>
+            </div>
+            <div class="apps-col wide">
+              <span class="apps-k">Cerebro’s interpretation</span>
+              <p class="apps-interp" id="apps-interp"></p>
+            </div>
+            <div class="apps-col">
+              <span class="apps-k">Availability</span>
+              <p><span class="pill" id="apps-status"></span></p>
+            </div>
+            <div class="apps-actions">
+              <button class="btn" id="apps-toggle" type="button" aria-pressed="false">Show original</button>
+              <button class="btn" id="apps-try" type="button">Try this goal <span class="arrow" aria-hidden="true">→</span></button>
+            </div>
+          </div>
         </div>
       </div>
-      <p class="note" data-reveal>Cerebro is an early build and isn’t notarized by Apple yet, which is why macOS asks you to approve it once in Privacy &amp; Security. For smarter, AI-designed workspaces, open Cerebro › Settings and paste an Anthropic API key. Without one, Cerebro plans offline.</p>
+      <p class="fineprint">Simplified representations of each app’s interface, drawn for illustration. App names belong to their owners; Cerebro isn’t affiliated with them. “Planned” and “Concept” integrations aren’t available yet.</p>
     </div>
   </section>
 
-  <section id="how">
+  <!-- 5. Playground (rendered by js/playground.js) -->
+  <section id="playground" class="pg" aria-labelledby="pg-title">
     <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>How it works</div>
-      <h2 data-reveal style="--d:1">Say what you want. <strong>Get the tools for it.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">Cerebro doesn’t memorise where each app keeps its buttons. It reads the controls that are actually there, every time, so it works in apps it has never seen.</p>
-      <div class="how">
-        <ol class="steps">
-          <li data-reveal><span class="step-n">01</span><div><h3>Describe your goal</h3><p>In your own words, like <span class="goal">make a monthly budget</span> or <span class="goal">crop a photo</span>.</p></div></li>
-          <li data-reveal><span class="step-n">02</span><div><h3>Cerebro reads the app</h3><p>Every menu command, toolbar button and panel it exposes: 465 in Numbers, 1,207 in Blender.</p></div></li>
-          <li data-reveal><span class="step-n">03</span><div><h3>You get a small workspace</h3><p>Only the tools your goal needs, in order: start, build, style, review, finish. Ask for more or remove what you don’t want.</p></div></li>
-          <li data-reveal><span class="step-n">04</span><div><h3>The buttons are real</h3><p>Pressing a tool operates the actual app, and Cerebro checks afterwards that it happened. When something new appears, like a dialog’s Create button, it becomes your next step.</p></div></li>
+      <header class="pg-head">
+        <h2 id="pg-title">Experience Cerebro.</h2>
+        <p class="pg-lede">A browser simulation of how Cerebro turns a goal into a workspace. Nothing on your computer is being controlled.</p>
+      </header>
+      <div id="pg-root"></div>
+    </div>
+  </section>
+
+  <!-- 6. Technology (rendered by js/tech.js) -->
+  <section id="technology" class="tech" aria-labelledby="tech-title"></section>
+
+  <!-- 7. Philosophy -->
+  <section id="philosophy" class="philo" aria-label="Why Cerebro exists">
+    <div class="wrap">
+      <p class="philo-line" data-words>For decades, humans have been learning how to use computers.</p>
+      <p class="philo-line" data-words>What if computers learned how we wanted to use them?</p>
+      <p class="philo-line philo-end" data-words>Cerebro is building toward that future.</p>
+      <p class="philo-sign reveal"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Software should adapt to you.</p>
+    </div>
+  </section>
+
+  <!-- 8. Verified demonstrations -->
+  <section id="proof" class="proof" aria-labelledby="proof-title">
+    <div class="wrap">
+      <header class="sec-head split">
+        <h2 id="proof-title" class="reveal">Already working. <span>On real software.</span></h2>
+        <p class="reveal">Every row below comes from Cerebro running against the real application on a Mac, not from a simulation.</p>
+      </header>
+      <div class="ledger" role="table" aria-label="Applications Cerebro has been tested on">
+        <div class="ledger-row ledger-head" role="row"><span role="columnheader">Application</span><span role="columnheader">Connected through</span><span role="columnheader">Controls found</span><span role="columnheader">What Cerebro did in the real app</span></div>
+        <div class="ledger-row reveal" role="row"><span role="cell"><b>Blender 5.3</b></span><span role="cell"><em class="pill verified">Verified</em>Blender plugin</span><span role="cell" class="n">1,207</span><span role="cell">Added shapes and modifiers; simplified the interface and restored it</span></div>
+        <div class="ledger-row reveal" role="row"><span role="cell"><b>Numbers</b></span><span role="cell"><em class="pill live">Live</em>macOS Accessibility</span><span role="cell" class="n">465</span><span role="cell">Created a new spreadsheet from the template chooser</span></div>
+        <div class="ledger-row reveal" role="row"><span role="cell"><b>TextEdit</b></span><span role="cell"><em class="pill live">Live</em>macOS Accessibility</span><span role="cell" class="n">168</span><span role="cell">New document, rich and plain text, ruler; a full workspace from a typed goal</span></div>
+        <div class="ledger-row reveal" role="row"><span role="cell"><b>Excalidraw</b></span><span role="cell"><em class="pill live">Live</em>Chrome extension</span><span role="cell" class="n">152</span><span role="cell">Picked the rectangle and arrow tools; faded the controls you don’t need</span></div>
+        <div class="ledger-row reveal" role="row"><span role="cell"><b>Photopea</b></span><span role="cell"><em class="pill live">Live</em>Chrome extension</span><span role="cell" class="n">83</span><span role="cell">Created a new image, then switched on the crop tool</span></div>
+      </div>
+
+      <div class="proof-split">
+        <figure class="proof-shot reveal">
+          <img src="assets/panel-textedit.jpg" width="500" height="1000" loading="lazy" decoding="async" alt="The Cerebro panel beside TextEdit, showing a five-step workspace for writing a letter">
+          <figcaption><span class="status"><i></i>Real capture</span>The Cerebro panel beside TextEdit. Five steps for writing a letter, every button labelled with how far to trust it.</figcaption>
+        </figure>
+        <div class="roadmap">
+          <div class="road reveal">
+            <h3><i class="ok"></i>Working now</h3>
+            <ul><li>Mac app for Accessibility-ready Mac apps</li><li>Chrome extension for web apps</li><li>Blender plugin with verified actions</li><li>Offline workspace planning</li><li>Simplify, undo and restore</li></ul>
+          </div>
+          <div class="road reveal">
+            <h3><i class="exp"></i>Experimental</h3>
+            <ul><li>AI planning with your own Anthropic key: built in, not yet proven at scale</li><li>Pages and Keynote: controls work, but canvas changes can’t be verified yet</li><li>Web apps whose menus ignore automation, like Photopea’s, fall back to guidance</li></ul>
+          </div>
+          <div class="road reveal">
+            <h3><i class="next"></i>Coming next</h3>
+            <ul><li>Windows and Linux</li><li>Plugins for DaVinci Resolve and Adobe apps</li><li>Screen understanding for apps with hidden controls</li><li>Remembered layouts and preferences</li><li>A signed, notarized Mac app</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Privacy and control -->
+  <section id="control" class="ctrl" aria-labelledby="ctrl-title">
+    <div class="wrap">
+      <header class="sec-head split">
+        <h2 id="ctrl-title" class="reveal">Your software. <span>Your control.</span></h2>
+        <p class="reveal">Cerebro changes how an app looks, never what it contains, unless you press a tool that does. Here is exactly what it can and can’t do.</p>
+      </header>
+
+      <figure class="flow reveal" aria-labelledby="flow-cap">
+        <div class="flow-mac">
+          <span class="flow-k">On your Mac</span>
+          <div class="flow-row">
+            <div class="flow-node"><b>Your apps</b><small>Blender, Numbers, web apps…</small></div>
+            <i class="flow-link" aria-hidden="true"></i>
+            <div class="flow-node"><b>Adapters</b><small>Accessibility · Chrome extension · Blender plugin</small></div>
+            <i class="flow-link" aria-hidden="true"></i>
+            <div class="flow-node core"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><b>Cerebro engine</b><small>Listens only on 127.0.0.1</small></div>
+            <i class="flow-link" aria-hidden="true"></i>
+            <div class="flow-node"><b>Your workspace</b><small>The Cerebro panel</small></div>
+          </div>
+        </div>
+        <div class="flow-out">
+          <i class="flow-link v" aria-hidden="true"></i>
+          <div class="flow-node ext"><b>Anthropic</b><small>Only if you add your own API key</small></div>
+          <div class="flow-sent">
+            <p><span class="flow-k">Sent for planning</span>The app’s name, your goal, and the names and menu locations of the controls Cerebro found, like “Insert › Chart”.</p>
+            <p><span class="flow-k">Never sent</span>What you type into fields, passwords, or screenshots. Without a key, Cerebro plans offline on your Mac.</p>
+          </div>
+        </div>
+        <figcaption id="flow-cap" class="sr-only">Cerebro runs on your Mac. Optional AI planning sends Anthropic only the app name, your goal and control names.</figcaption>
+      </figure>
+
+      <ol class="guards">
+        <li class="reveal"><b>Everything comes back.</b><span>Show the original interface at any time. Quitting Cerebro or switching apps restores every app as it was.</span></li>
+        <li class="reveal"><b>Risky actions wait for you.</b><span>Delete, send, pay, publish and quit always need a second click.</span></li>
+        <li class="reveal"><b>Automated or guided, always labelled.</b><span><em class="pill verified">Verified</em> runs through the app’s own API and is checked. <em class="pill live">Live</em> is pressed for you, then confirmed. <em class="pill guide">Guide</em> is pointed out, and you press it.</span></li>
+        <li class="reveal"><b>Passwords are off-limits.</b><span>Password and secure fields are blocked in the engine itself, and field contents are never read.</span></li>
+        <li class="reveal"><b>Permissions you can see.</b><span>macOS asks before Cerebro gets Accessibility, and you can revoke it in System Settings. The Chrome extension acts only on the tab where you switch it on.</span></li>
+        <li class="reveal"><b>The AI chooses, never acts.</b><span>It can only pick from controls Cerebro found; it can’t invent actions or run code. Your key is encrypted with your Mac’s Keychain.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 10. Download -->
+  <section id="download" class="dl" aria-labelledby="dl-title">
+    <div class="wrap dl-grid">
+      <div class="dl-visual" aria-hidden="true">
+        <div class="dl-halo"></div>
+        <canvas class="core-canvas" id="core-dl"></canvas>
+      </div>
+      <div class="dl-main">
+        <p class="status reveal"><i></i>Early access · v0.1.0</p>
+        <h2 id="dl-title" class="reveal">Meet your new <span class="chrome-text">interface.</span></h2>
+        <p class="dl-lede reveal">Start with the Mac app. Add the Chrome extension for web apps and the Blender plugin for 3D work.</p>
+        <ol class="dl-list">
+          <li class="dl-item primary reveal">
+            <div class="dl-top">
+              <div><h3>Cerebro for Mac</h3><p class="dl-meta">macOS · Apple Silicon · 114 MB</p></div>
+              <a class="btn btn-primary" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-macOS-arm64.zip" rel="noopener"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
+            </div>
+            <p>The floating Cerebro panel. Works with Numbers, Pages, Keynote, TextEdit and most other Mac apps.</p>
+            <details><summary>How to install</summary><ol><li>Unzip and move Cerebro to Applications.</li><li>Open it. If macOS says it can’t verify Cerebro, click Done, then open System Settings › Privacy &amp; Security and click Open Anyway.</li><li>Allow Accessibility when Cerebro asks.</li></ol></details>
+          </li>
+          <li class="dl-item reveal">
+            <div class="dl-top">
+              <div><h3>Chrome extension</h3><p class="dl-meta">Chrome, Brave, Edge · 180 KB</p></div>
+              <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-Chrome-Extension.zip" rel="noopener">Download .zip</a>
+            </div>
+            <p>Simplifies web apps like Excalidraw and Photopea right on the page.</p>
+            <details><summary>How to install</summary><ol><li>Unzip the file.</li><li>Open <code>chrome://extensions</code> and turn on Developer mode.</li><li>Click Load unpacked and choose the folder.</li></ol></details>
+          </li>
+          <li class="dl-item reveal">
+            <div class="dl-top">
+              <div><h3>Blender plugin</h3><p class="dl-meta">Blender 4.2 or later · 6 KB</p></div>
+              <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/cerebro_bridge-0.1.0.zip" rel="noopener">Download .zip</a>
+            </div>
+            <p>Gives Cerebro direct, verified control of Blender’s own operations.</p>
+            <details><summary>How to install</summary><ol><li>In Blender, open Edit › Preferences.</li><li>Choose Get Extensions › Install from Disk.</li><li>Pick the downloaded .zip.</li></ol></details>
+          </li>
         </ol>
-        <img class="panel-shot" src="assets/panel-textedit.jpg" width="500" height="1000" loading="lazy" decoding="async" alt="The Cerebro panel beside TextEdit, showing a five-step workspace for writing a letter" data-reveal style="--d:2">
+        <div class="platforms reveal">
+          <p><span class="pill available">Available</span>macOS on Apple Silicon · Chrome, Brave and Edge · Blender 4.2+</p>
+          <p><span class="pill concept">Coming later</span>Windows · Linux</p>
+        </div>
+        <p class="dl-note reveal">Cerebro is an early build and isn’t notarized by Apple yet, which is why macOS asks you to approve it once in Privacy &amp; Security. It needs the Accessibility permission to read and press controls in Mac apps. For AI-designed workspaces, paste your own Anthropic API key in Cerebro › Settings; without one, Cerebro plans offline.</p>
       </div>
-    </div>
-  </section>
-
-  <section id="trust">
-    <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>Honest by design</div>
-      <h2 data-reveal style="--d:1">Every tool says <strong>how far to trust it.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">Cerebro never pretends. Each button carries a badge that tells you exactly what will happen when you press it.</p>
-      <div class="badges">
-        <div class="badge card" data-reveal style="--d:0"><span class="pill verified">Verified</span><h3>Official app API</h3><p>Runs through the app’s own plugin system and checks the result. Blender tools work this way.</p></div>
-        <div class="badge card" data-reveal style="--d:1"><span class="pill live">Live</span><h3>Pressed for you</h3><p>Operated through macOS Accessibility or the web page itself, then confirmed by re-reading the app.</p></div>
-        <div class="badge card" data-reveal style="--d:2"><span class="pill guide">Guide</span><h3>Shown, not pressed</h3><p>Typing and sliders stay yours. Cerebro points to the control and you use it.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="apps">
-    <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>Tested on real apps</div>
-      <h2 data-reveal style="--d:1">One brain. <strong>Many apps.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">The same engine plans every workspace. Small adapters connect it to each kind of software, with no app-specific workflows written by hand.</p>
-      <div class="table-wrap" data-reveal>
-        <table>
-          <thead><tr><th>App</th><th>Controls found</th><th>What Cerebro did in the real app</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Blender 5.3</strong><small>Plugin</small></td><td class="n" data-count="1207">1,207</td><td>Added shapes and modifiers; simplified and restored the interface</td></tr>
-            <tr><td><strong>Numbers</strong><small>macOS Accessibility</small></td><td class="n" data-count="465">465</td><td>Created a new spreadsheet from the template chooser</td></tr>
-            <tr><td><strong>TextEdit</strong><small>macOS Accessibility</small></td><td class="n" data-count="168">168</td><td>New document, rich and plain text, ruler; a full workspace from a typed goal</td></tr>
-            <tr><td><strong>Excalidraw</strong><small>Chrome extension</small></td><td class="n" data-count="152">152</td><td>Picked the rectangle and arrow tools; faded the controls you don’t need</td></tr>
-            <tr><td><strong>Photopea</strong><small>Chrome extension</small></td><td class="n" data-count="83">83</td><td>Created a new image, then switched on the crop tool</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section id="safety">
-    <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>Safety</div>
-      <h2 data-reveal style="--d:1">Your work <strong>stays yours.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">Cerebro changes how an app looks, never what it contains, unless you press a tool that does.</p>
-      <ul class="rules">
-        <li data-reveal style="--d:0"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>Asks before anything risky</strong><span>Delete, send, pay, publish and quit always need a second click.</span></li>
-        <li data-reveal style="--d:1"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>Never touches passwords</strong><span>Password fields are skipped entirely, and field contents are never read.</span></li>
-        <li data-reveal style="--d:2"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>Puts everything back</strong><span>Show the original interface any time. Quitting Cerebro or switching apps restores every app.</span></li>
-        <li data-reveal style="--d:0"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>Runs on your Mac</strong><span>Cerebro’s engine only listens on your own computer. Web pages can’t reach it.</span></li>
-        <li data-reveal style="--d:1"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>The AI chooses, never acts</strong><span>It picks from controls Cerebro found. It can’t invent actions or run code.</span></li>
-        <li data-reveal style="--d:2"><svg class="glyph emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><strong>Your key stays private</strong><span>Your Anthropic key is stored encrypted in your Mac’s keychain and only sent to Anthropic.</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="status">
-    <div class="wrap">
-      <div class="kicker" data-reveal><span class="line"></span>Roadmap</div>
-      <h2 data-reveal style="--d:1">Where Cerebro <strong>is today.</strong></h2>
-      <p class="sub" data-reveal style="--d:2">An early, working prototype. Here’s what’s solid and what’s next.</p>
-      <div class="status">
-        <div class="card" data-reveal style="--d:0"><h3><i></i>Working now</h3><ul><li>Mac app for any Accessibility-ready app</li><li>Chrome extension for web apps</li><li>Blender plugin</li><li>AI planning with your Anthropic key, or offline</li><li>Simplify, undo and restore</li></ul></div>
-        <div class="card next" data-reveal style="--d:1"><h3><i></i>Coming next</h3><ul><li>Windows and Linux</li><li>Plugins for DaVinci Resolve and Adobe apps</li><li>Screen understanding for apps with hidden controls</li><li>Remembered layouts and preferences</li><li>A signed, notarized Mac app</li></ul></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="closer" id="closer">
-    <div class="wrap">
-      <div class="closer-mark" aria-hidden="true"><span class="halo"></span><span class="halo"></span><span class="halo"></span><svg class="emblem live" viewBox="0 0 100 100"><use href="#mark"/></svg></div>
-      <h2 data-reveal>Learn one interface. <strong>Use every app.</strong></h2>
-      <div class="ctas" data-reveal style="--d:1"><a class="btn primary" href="#download"><svg class="mini emblem" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a></div>
     </div>
   </section>
 </main>
 
-<footer>
+<footer class="foot">
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Cerebro home"><img src="assets/wordmark.png" width="811" height="133" alt="Cerebro"></a>
-    <span>A universal interface for complicated software.</span>
-    <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads" target="_blank" rel="noopener">GitHub</a>
+    <p class="foot-line reveal">The future has <span class="chrome-text">one interface.</span></p>
+    <div class="foot-row">
+      <a class="nav-brand" href="#top" aria-label="Cerebro, back to top"><svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><img src="assets/wordmark.png" width="811" height="133" alt=""></a>
+      <nav aria-label="Footer">
+        <a href="#download">Download</a>
+        <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/company/cerebroapp/" rel="noopener">LinkedIn</a>
+      </nav>
+      <span class="foot-meta">© 2026 Cerebro · Early access</span>
+    </div>
   </div>
 </footer>
-
-<script>
-(function () {
-  "use strict";
-  var root = document.documentElement;
-  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var finePointer = window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches;
-  var siteReady = false, readyHooks = [];
-  function onReady(fn) { siteReady ? fn() : readyHooks.push(fn); }
-  function markReady() { if (siteReady) return; siteReady = true; readyHooks.forEach(function (f) { f(); }); }
-
-  /* ================= activation sequence ================= */
-  (function boot() {
-    var el = document.getElementById("boot");
-    if (!root.classList.contains("booting")) { markReady(); return; }
-    var done = false, timer;
-    function finish(fast) {
-      if (done) return; done = true; clearTimeout(timer);
-      try { sessionStorage.setItem("cerebro-activated", "1"); } catch (e) {}
-      ["keydown", "wheel", "touchstart", "pointerdown"].forEach(function (t) { window.removeEventListener(t, skip, true); });
-      var mark = el.querySelector(".boot-mark"), target = document.getElementById("brand-mark");
-      // Let the header fade in under the overlay so the emblem has somewhere to land.
-      root.classList.remove("booting"); root.classList.add("booted");
-      el.style.display = "grid";
-      var from = mark.getBoundingClientRect(), to = target.getBoundingClientRect();
-      var dx = (to.left + to.width / 2) - (from.left + from.width / 2);
-      var dy = (to.top + to.height / 2) - (from.top + from.height / 2);
-      var s = to.width / from.width;
-      var dur = fast ? 380 : 900;
-      target.style.opacity = "0";
-      setTimeout(function () { target.style.transition = "opacity .25s"; target.style.opacity = ""; }, dur - 60);
-      mark.style.animation = "none"; mark.style.opacity = "1";
-      el.querySelector(".boot-mark .core").style.animation = "none";
-      el.querySelector(".boot-mark .core").style.fill = "var(--red)";
-      mark.style.transition = "transform " + dur + "ms cubic-bezier(.7,0,.2,1)";
-      el.classList.add("leaving");
-      el.style.transition = "background-color " + (dur - 100) + "ms cubic-bezier(.7,0,.2,1)";
-      requestAnimationFrame(function () {
-        mark.style.transform = "translate3d(" + dx + "px," + dy + "px,0) scale(" + s + ")";
-        setTimeout(markReady, fast ? 80 : 260);
-      });
-      setTimeout(function () { el.remove(); }, dur + 40);
-    }
-    function skip() { finish(true); }
-    el.querySelector(".boot-skip").addEventListener("click", skip);
-    ["keydown", "wheel", "touchstart", "pointerdown"].forEach(function (t) { window.addEventListener(t, skip, { capture: true, passive: true }); });
-    timer = setTimeout(function () { finish(false); }, 2350);
-  })();
-
-  /* ================= reveal on scroll ================= */
-  var counted = new WeakSet();
-  function countUp(el) {
-    if (counted.has(el)) return; counted.add(el);
-    var target = +el.getAttribute("data-count"); if (!target || reduce) return;
-    var t0 = performance.now(), dur = 1400;
-    (function tick(now) {
-      var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4);
-      el.textContent = Math.round(target * e).toLocaleString("en-US");
-      if (p < 1) requestAnimationFrame(tick);
-    })(t0);
-  }
-  onReady(function () {
-    var items = document.querySelectorAll("[data-reveal]");
-    if (!("IntersectionObserver" in window) || reduce) {
-      items.forEach(function (n) { n.classList.add("in"); });
-      document.querySelectorAll("[data-count]").forEach(function (n) { counted.add(n); });
-      document.getElementById("closer").classList.add("in");
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (!en.isIntersecting) return;
-        var n = en.target; n.classList.add("in"); io.unobserve(n);
-        n.querySelectorAll && n.querySelectorAll("[data-count]").forEach(countUp);
-        if (n.hasAttribute("data-count")) countUp(n);
-      });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
-    items.forEach(function (n) { io.observe(n); });
-    new IntersectionObserver(function (en, o) { if (en[0].isIntersecting) { en[0].target.classList.add("in"); o.disconnect(); } }, { threshold: .3 })
-      .observe(document.getElementById("closer"));
-  });
-
-  /* ================= header: scroll progress + section indicator ================= */
-  (function header() {
-    var head = document.getElementById("header"), bar = document.getElementById("progress");
-    var nav = document.getElementById("nav"), ind = nav.querySelector(".nav-ind");
-    var links = Array.prototype.slice.call(nav.querySelectorAll("a.opt"));
-    var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
-    var ticking = false, current = null;
-    function moveInd(a) {
-      if (a === current) return; current = a;
-      links.forEach(function (l) { l.classList.toggle("active", l === a); });
-      if (!a || !a.offsetParent) { ind.style.opacity = 0; return; }
-      ind.style.opacity = 1; ind.style.width = (a.offsetWidth - 24) + "px";
-      ind.style.transform = "translateX(" + (a.offsetLeft + 12) + "px)";
-    }
-    function update() {
-      ticking = false;
-      var y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight;
-      bar.style.transform = "scaleX(" + (max > 0 ? Math.min(1, y / max) : 0) + ")";
-      head.classList.toggle("scrolled", y > 8);
-      var mid = innerHeight * 0.35, hit = null;
-      sections.forEach(function (s, i) { if (!s) return; var r = s.getBoundingClientRect(); if (r.top <= mid && r.bottom > mid) hit = links[i]; });
-      moveInd(hit);
-    }
-    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    window.addEventListener("resize", function () { current = null; update(); });
-    update();
-  })();
-
-  /* ================= cards respond to the pointer ================= */
-  if (finePointer && !reduce) {
-    document.querySelectorAll(".card").forEach(function (c) {
-      var raf = 0, px = 0, py = 0;
-      function apply() {
-        raf = 0;
-        var r = c.getBoundingClientRect(), x = (px - r.left) / r.width, y = (py - r.top) / r.height;
-        c.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
-        c.style.setProperty("--my", (y * 100).toFixed(1) + "%");
-        c.style.transform = "perspective(900px) rotateX(" + ((.5 - y) * 3).toFixed(2) + "deg) rotateY(" + ((x - .5) * 3).toFixed(2) + "deg) translateZ(0)";
-      }
-      c.addEventListener("pointermove", function (e) { px = e.clientX; py = e.clientY; if (!raf) raf = requestAnimationFrame(apply); });
-      c.addEventListener("pointerleave", function () { c.style.transform = ""; });
-    });
-  }
-
-  /* ================= before / after slider ================= */
-  (function compare() {
-    var box = document.getElementById("compare"), range = document.getElementById("compare-range");
-    function setPos(v) { box.style.setProperty("--pos", v + "%"); range.value = v; }
-    range.addEventListener("input", function () { box.classList.remove("intro"); setPos(range.value); });
-    if (reduce || !("IntersectionObserver" in window)) return;
-    new IntersectionObserver(function (entries, obs) {
-      if (!entries[0].isIntersecting) return; obs.disconnect();
-      setTimeout(function () { setPos(18); }, 350);
-      setTimeout(function () { setPos(62); }, 1600);
-      setTimeout(function () { box.classList.remove("intro"); }, 2900);
-    }, { threshold: 0.45 }).observe(box);
-  })();
-
-  /* ================= neural field ================= */
-  var neural = (function () {
-    var cv = document.getElementById("neural"), ctx = cv.getContext("2d");
-    var W = 0, H = 0, dpr = 1, nodes = [], pulses = [], visible = true, running = false, last = 0, nextPulse = 0, burst = 0, scanT = -1, nextScan = 0;
-    var LINK = 150;
-    function size() {
-      var r = cv.getBoundingClientRect();
-      dpr = Math.min(window.devicePixelRatio || 1, 2); W = r.width; H = r.height;
-      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      LINK = Math.max(110, Math.min(170, W / 9));
-      var n = Math.round(Math.max(34, Math.min(84, W * H / 15000)));
-      nodes = [];
-      for (var i = 0; i < n; i++) nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .12, vy: (Math.random() - .5) * .12, r: .8 + Math.random() * 1.3, heat: 0 });
-      if (reduce) draw(0);
-    }
-    function neighbours(a) {
-      var out = [];
-      for (var j = 0; j < nodes.length; j++) { var b = nodes[j]; if (b === a) continue; var dx = a.x - b.x, dy = a.y - b.y; if (dx * dx + dy * dy < LINK * LINK) out.push(b); }
-      return out;
-    }
-    function spawn() {
-      // Prefer starting on the right, where the field is most visible.
-      var a = nodes[Math.floor(Math.random() * nodes.length)];
-      if (a.x < W * .4 && Math.random() < .7) return;
-      var nb = neighbours(a); if (!nb.length) return;
-      pulses.push({ a: a, b: nb[Math.floor(Math.random() * nb.length)], t: 0, hops: 2 + Math.floor(Math.random() * 3), speed: .0016 + Math.random() * .0012 });
-    }
-    function draw(dt) {
-      ctx.clearRect(0, 0, W, H);
-      var i, j, a, b, dx, dy, d2, L2 = LINK * LINK;
-      for (i = 0; i < nodes.length; i++) {
-        a = nodes[i];
-        if (dt) { a.x += a.vx * dt * .06; a.y += a.vy * dt * .06;
-          if (a.x < -20) a.x = W + 20; else if (a.x > W + 20) a.x = -20;
-          if (a.y < -20) a.y = H + 20; else if (a.y > H + 20) a.y = -20;
-          a.heat = Math.max(0, a.heat - dt * .0012); }
-      }
-      // edges fade in and out with distance, so links form and break as nodes drift
-      ctx.lineWidth = 1;
-      for (i = 0; i < nodes.length; i++) {
-        a = nodes[i];
-        for (j = i + 1; j < nodes.length; j++) {
-          b = nodes[j]; dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy;
-          if (d2 > L2) continue;
-          var k = 1 - d2 / L2, heat = Math.max(a.heat, b.heat);
-          ctx.strokeStyle = heat > .02 ? "rgba(224,36,63," + (k * .35 * heat + k * .06).toFixed(3) + ")" : "rgba(236,235,231," + (k * .085).toFixed(3) + ")";
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-        }
-      }
-      for (i = 0; i < nodes.length; i++) {
-        a = nodes[i];
-        ctx.fillStyle = a.heat > .02 ? "rgba(255,70,95," + (.35 + a.heat * .65).toFixed(3) + ")" : "rgba(236,235,231,.32)";
-        ctx.beginPath(); ctx.arc(a.x, a.y, a.r + a.heat * 1.4, 0, 6.2832); ctx.fill();
-      }
-      // pulses: a red signal travelling along the network
-      for (i = pulses.length - 1; i >= 0; i--) {
-        var p = pulses[i];
-        p.t += dt * p.speed * (burst > 0 ? 2.2 : 1);
-        if (p.t >= 1) {
-          p.b.heat = 1; p.hops--;
-          var nb = p.hops > 0 ? neighbours(p.b).filter(function (n) { return n !== p.a; }) : [];
-          if (!nb.length) { pulses.splice(i, 1); continue; }
-          p.a = p.b; p.b = nb[Math.floor(Math.random() * nb.length)]; p.t = 0;
-        }
-        var x = p.a.x + (p.b.x - p.a.x) * p.t, y = p.a.y + (p.b.y - p.a.y) * p.t;
-        var tx = p.a.x + (p.b.x - p.a.x) * Math.max(0, p.t - .28), ty = p.a.y + (p.b.y - p.a.y) * Math.max(0, p.t - .28);
-        var g = ctx.createLinearGradient(tx, ty, x, y); g.addColorStop(0, "rgba(224,36,63,0)"); g.addColorStop(1, "rgba(255,80,104,.9)");
-        ctx.strokeStyle = g; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(x, y); ctx.stroke();
-        ctx.fillStyle = "#ff5a70"; ctx.beginPath(); ctx.arc(x, y, 1.8, 0, 6.2832); ctx.fill();
-      }
-      // a faint scan ring, every so often
-      if (scanT >= 0) {
-        scanT += dt / 2600;
-        var cx = W > 980 ? W * .74 : W * .5, cy = W > 980 ? H * .5 : H * .7, rad = scanT * Math.max(W, H) * .75;
-        ctx.strokeStyle = "rgba(236,235,231," + (.07 * (1 - scanT)).toFixed(3) + ")"; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(cx, cy, rad, 0, 6.2832); ctx.stroke();
-        for (i = 0; i < nodes.length; i++) { a = nodes[i]; dx = a.x - cx; dy = a.y - cy; var dd = Math.sqrt(dx * dx + dy * dy); if (Math.abs(dd - rad) < 6) a.heat = Math.max(a.heat, .35); }
-        if (scanT >= 1) scanT = -1;
-      }
-    }
-    function frame(now) {
-      if (!running) return;
-      var dt = last ? Math.min(50, now - last) : 16; last = now;
-      if (now > nextPulse) { spawn(); nextPulse = now + (burst > 0 ? 140 : 900 + Math.random() * 900); }
-      if (burst > 0) burst -= dt;
-      if (now > nextScan && scanT < 0) { scanT = 0; nextScan = now + 9000 + Math.random() * 4000; }
-      draw(dt);
-      requestAnimationFrame(frame);
-    }
-    function setRunning(on) {
-      if (reduce) return;
-      if (on && !running) { running = true; last = 0; requestAnimationFrame(frame); }
-      else if (!on) running = false;
-    }
-    size();
-    var rt; window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(size, 150); });
-    if ("IntersectionObserver" in window) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; setRunning(visible && !document.hidden); }).observe(cv);
-    document.addEventListener("visibilitychange", function () { setRunning(visible && !document.hidden); });
-    onReady(function () { nextScan = performance.now() + 600; setRunning(visible); });
-    return { think: function (ms) { burst = ms; for (var i = 0; i < 4; i++) spawn(); } };
-  })();
-
-  /* ================= console: request → workspace ================= */
-  (function consoleDemo() {
-    var box = document.getElementById("console"), form = document.getElementById("ask"), input = document.getElementById("ask-input");
-    var tools = document.getElementById("tools"), readout = document.getElementById("readout"), state = document.getElementById("state-text");
-    var chips = document.getElementById("chips");
-    var EX = {
-      blender: { app: "Blender 5.3", found: 1207, tools: [["Add cylinder", "verified"], ["Inset faces", "verified"], ["Solidify modifier", "verified"], ["Add torus for the handle", "verified"], ["Shade smooth", "verified"]] },
-      numbers: { app: "Numbers", found: 465, tools: [["New from template", "live"], ["Add row", "live"], ["Currency format", "live"], ["Type your totals", "guide"], ["Insert chart", "live"]] },
-      photopea: { app: "Photopea", found: 83, tools: [["New project", "live"], ["Crop tool", "live"], ["Set aspect ratio", "guide"], ["Export as JPG", "live"]] },
-      textedit: { app: "TextEdit", found: 168, tools: [["New document", "live"], ["Make rich text", "live"], ["Show ruler", "live"], ["Choose font size", "guide"], ["Save", "live"]] }
-    };
-    var LABEL = { verified: "Verified", live: "Live", guide: "Guide" };
-    function match(q) {
-      q = q.toLowerCase();
-      if (/mug|3d|model|blender|render|sculpt|shape|cup/.test(q)) return EX.blender;
-      if (/budget|spreadsheet|table|numbers|expense|chart|invoice|money/.test(q)) return EX.numbers;
-      if (/photo|crop|image|picture|resize|photopea|edit a pic/.test(q)) return EX.photopea;
-      if (/letter|write|document|essay|note|text|cv|resume|résumé/.test(q)) return EX.textedit;
-      return null;
-    }
-    var busy = false, timers = [];
-    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-    function setReadout(left, right) { readout.innerHTML = "<span>" + left + "</span><span>" + (right || "") + "</span>"; }
-    function run(goal) {
-      goal = (goal || "").trim(); if (!goal || busy) return;
-      timers.forEach(clearTimeout); timers = [];
-      var ex = match(goal);
-      busy = true; box.classList.remove("done"); box.classList.add("thinking");
-      state.textContent = "Reading"; tools.innerHTML = "";
-      neural.think(1600);
-      if (!ex) {
-        setReadout("Reading the app you have open…");
-        later(function () {
-          box.classList.remove("thinking"); busy = false; state.textContent = "Ready";
-          setReadout("No app in this preview for that goal");
-          tools.innerHTML = '<li class="empty">In the real app, Cerebro reads whatever you have open. Here, try one of the examples above.</li>';
-          chips.querySelectorAll(".chip").forEach(function (c, i) { c.classList.remove("nudge"); void c.offsetWidth; c.style.animationDelay = (i * 90) + "ms"; c.classList.add("nudge"); });
-        }, 900);
-        return;
-      }
-      var t0 = performance.now(), dur = reduce ? 1 : 1100;
-      (function tick(now) {
-        var p = Math.min(1, (now - t0) / dur), n = Math.round(ex.found * (1 - Math.pow(1 - p, 3)));
-        setReadout("Reading " + ex.app + " · <b>" + n.toLocaleString("en-US") + "</b> controls");
-        if (p < 1) requestAnimationFrame(tick);
-      })(t0);
-      later(function () { state.textContent = "Choosing"; }, dur + 50);
-      later(function () {
-        box.classList.remove("thinking"); box.classList.add("done"); state.textContent = "Workspace ready"; busy = false;
-        setReadout(ex.app + " · <b>" + ex.found.toLocaleString("en-US") + "</b> controls", '<span class="kept">kept <b>' + ex.tools.length + "</b></span>");
-        tools.innerHTML = ex.tools.map(function (t, i) {
-          return '<li style="--i:' + i + '"><span class="n">' + String(i + 1).padStart(2, "0") + "</span><span>" + t[0] + '</span><span class="pill ' + t[1] + '">' + LABEL[t[1]] + "</span></li>";
-        }).join("");
-      }, dur + 520);
-    }
-    function typeThen(text) {
-      if (busy) return;
-      if (reduce) { input.value = text; run(text); return; }
-      input.value = ""; var i = 0;
-      (function step() { input.value = text.slice(0, ++i); if (i < text.length) setTimeout(step, 22 + Math.random() * 20); else setTimeout(function () { run(text); }, 160); })();
-    }
-    form.addEventListener("submit", function (e) { e.preventDefault(); run(input.value); });
-    chips.addEventListener("click", function (e) { var c = e.target.closest(".chip"); if (c) typeThen(c.getAttribute("data-goal")); });
-    // Show it working once, when the hero first appears.
-    onReady(function () {
-      if (reduce || !("IntersectionObserver" in window)) return;
-      new IntersectionObserver(function (en, o) {
-        if (!en[0].isIntersecting) return; o.disconnect();
-        setTimeout(function () { if (!input.value && document.activeElement !== input) typeThen("Model a coffee mug"); }, 900);
-      }, { threshold: .6 }).observe(box);
-    });
-  })();
-})();
-</script>
 </body>
 </html>

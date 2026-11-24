@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abdulhadifarzad0-design.github.io/cerebro-downloads/sitemap.xml

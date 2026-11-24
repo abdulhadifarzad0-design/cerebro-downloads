@@ -1,0 +1,77 @@
+/* Cerebro · "Software that understands software."
+   Pinned (desktop): a sticky 100vh stage, scroll drives one continuous scene.
+   Stacked (small screens, reduced motion): four stages, each with its own frame. */
+
+#technology.tech { position: relative; padding: 0; background: var(--ground); }
+#technology.tech.is-pinned { height: 420vh; }
+
+.tech-stage { position: relative; }
+.tech-copy { position: relative; z-index: 2; min-width: 0; }
+
+.tech-status { margin: 0 0 18px; }
+.tech-title { margin: 0; font: 600 clamp(38px, 6.4vw, 96px)/.98 var(--display); letter-spacing: -.045em; text-wrap: balance; }
+.tech-title .chrome-text { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.tech-lede { margin: 20px 0 0; max-width: 40ch; color: var(--muted); font-size: 17px; line-height: 1.55; }
+
+/* stage list */
+.tech-track { position: relative; margin-top: 44px; }
+.tech-steps { position: relative; list-style: none; margin: 0; padding: 0; }
+.tech-step { color: var(--dim); }
+.tech-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--line-3); background: var(--ground); position: relative; z-index: 1;
+  transition: background-color .5s var(--ease), border-color .5s var(--ease), box-shadow .6s var(--ease); }
+.tech-num { flex: none; font: 500 11px/1 var(--mono); letter-spacing: .12em; color: var(--dim); }
+.tech-step h3 { margin: 0; font: 600 20px/1.2 var(--display); letter-spacing: -.02em; color: inherit; transition: color .5s var(--ease); }
+.tech-body p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; max-width: 42ch; }
+.tech-body .tech-fact { margin-top: 14px; padding-left: 14px; border-left: 1px solid rgba(224, 36, 63, .6); font: 400 14px/1.55 var(--body); color: #a9a8a4; max-width: 44ch; }
+.tech-mini { display: none; }
+.tech-rail { display: none; }
+
+/* ---------- pinned ---------- */
+.tech.is-pinned .tech-stage {
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  display: grid; grid-template-columns: minmax(300px, 470px) minmax(0, 1fr); column-gap: clamp(8px, 2vw, 40px);
+  padding-left: max(var(--gutter), calc((100% - var(--maxw)) / 2 + 20px));
+}
+.tech.is-pinned .tech-copy { padding: clamp(96px, 13vh, 132px) 0 40px; align-self: start; }
+.tech.is-pinned .tech-title { font-size: clamp(36px, min(4.5vw, 7vh), 68px); }
+.tech.is-pinned .tech-step { display: flex; align-items: center; gap: 14px; height: 46px; }
+.tech.is-pinned .tech-step.is-active { color: var(--ink); }
+.tech.is-pinned .tech-step.is-active .tech-num { color: var(--red-hi); }
+.tech.is-pinned .tech-step.is-active .tech-dot,
+.tech.is-pinned .tech-step.is-done .tech-dot { background: var(--red); border-color: var(--red); box-shadow: 0 0 0 4px rgba(224, 36, 63, .14), 0 0 14px var(--red-glow); }
+.tech.is-pinned .tech-step.is-done { color: var(--muted); }
+.tech.is-pinned .tech-rail { display: block; position: absolute; left: 4px; top: 23px; height: 138px; width: 1px; background: var(--line-2); }
+.tech.is-pinned .tech-rail i { position: absolute; inset: 0; transform-origin: 50% 0; transform: scaleY(0); background: linear-gradient(var(--red-hi), var(--red)); box-shadow: 0 0 8px var(--red-glow); }
+.tech.is-pinned .tech-track { margin-bottom: 196px; }
+.tech.is-pinned .tech-body { position: absolute; left: 0; right: 0; top: calc(100% + 26px); opacity: 0; transform: translate3d(0, 10px, 0); pointer-events: none;
+  transition: opacity .45s var(--ease), transform .8s var(--ease); }
+.tech.is-pinned .tech-step.is-active .tech-body { opacity: 1; transform: none; pointer-events: auto; transition-delay: .08s; }
+
+.tech-viz { position: relative; min-width: 0; height: 100%; }
+.tech-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tech-core { position: absolute; left: 50%; top: 50%; width: 160px; height: 160px; transform: translate(-50%, -50%); pointer-events: none; }
+.tech-core.core-fallback { object-fit: contain; }
+
+@media (max-height: 820px) {
+  .tech.is-pinned .tech-lede { display: none; }
+  .tech.is-pinned .tech-track { margin-top: 32px; }
+}
+
+/* ---------- stacked ---------- */
+#technology.tech.is-stacked { padding: clamp(96px, 14vw, 150px) 0 clamp(64px, 10vw, 120px); }
+.tech.is-stacked .tech-stage { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+.tech.is-stacked .tech-viz { display: none; }
+.tech.is-stacked .tech-title { font-size: clamp(38px, 9vw, 84px); }
+.tech.is-stacked .tech-steps { margin-top: 12px; }
+.tech.is-stacked .tech-step { display: block; padding: 30px 0 34px; border-top: 1px solid var(--line); color: var(--ink); }
+.tech.is-stacked .tech-dot { display: none; }
+.tech.is-stacked .tech-num { color: var(--red-hi); }
+.tech.is-stacked .tech-step h3 { margin: 10px 0 12px; font-size: clamp(22px, 5.4vw, 30px); }
+.tech.is-stacked .tech-mini { display: block; width: 100%; height: auto; aspect-ratio: 5 / 4; margin-top: 22px; border-radius: 18px; border: 1px solid var(--line);
+  background: radial-gradient(70% 70% at 47% 50%, rgba(224, 36, 63, .07), transparent 70%), var(--raised); }
+
+@media (min-width: 900px) {
+  .tech.is-stacked .tech-step { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-rows: auto auto 1fr; column-gap: 56px; align-items: start; }
+  .tech.is-stacked .tech-num, .tech.is-stacked .tech-step h3, .tech.is-stacked .tech-body { grid-column: 1; }
+  .tech.is-stacked .tech-mini { grid-column: 2; grid-row: 1 / span 3; margin-top: 0; }
+}
