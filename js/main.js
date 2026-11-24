@@ -187,7 +187,7 @@
       // where the core rests in the hero, from layout (never clobber the intro's transform)
       var sr = stage.getBoundingClientRect();
       base = { x: sr.left + coreEl.offsetLeft, y: sr.top + coreEl.offsetTop + coreEl.offsetHeight / 2, s: coreEl.offsetWidth };
-      Object.keys(wins).forEach(function (k) { wins[k].measure(); });
+      // each window re-measures itself through its ResizeObserver when --ww changes
     }
     resizeSubs.push(measure);
     measure();
@@ -270,7 +270,8 @@
       e.preventDefault(); n = (n + tabs.length) % tabs.length; tabs[n].focus(); userTouched = true; select(apps[n].id);
     });
 
-    var win = window.CerebroWindow(host, current, { interactive: true });
+    var win = null; // built shortly before the section scrolls into view
+    function W() { if (!win) { win = window.CerebroWindow(host, current, { interactive: true }); bindTilt(); } return win; }
 
     function info(app) {
       var g = app.goals[0];
@@ -280,14 +281,14 @@
       toggle.textContent = "Show original"; toggle.setAttribute("aria-pressed", "false");
       $("#apps-info").setAttribute("aria-labelledby", "apps-tab-" + app.id);
     }
-    function run() { win.play(1, 2900, function () { win.demo(450, 760); }); }
+    function run() { var w = W(); w.play(1, 2900, function () { w.demo(450, 760); }); }
     function select(id) {
       $$(".apps-tab", rail).forEach(function (t) { var on = t.id === "apps-tab-" + id; t.setAttribute("aria-selected", on ? "true" : "false"); t.tabIndex = on ? 0 : -1; });
       if (busy) { pending = id; return; }
       if (id === current) return;
       current = id; busy = true;
       info(A.find(id));
-      win.setApp(id, true, function () {
+      W().setApp(id, true, function () {
         busy = false;
         if (pending && pending !== current) { var next = pending; pending = null; select(next); return; }
         pending = null; run();
@@ -305,8 +306,8 @@
     }
     toggle.addEventListener("click", function () {
       userTouched = true; clearTimeout(cycleTimer);
-      var showOriginal = win.t > .5;
-      win.stop(); win.play(showOriginal ? 0 : 1, 1500, showOriginal ? null : function () { win.demo(300, 700); });
+      var w = W(), showOriginal = w.t > .5;
+      w.stop(); w.play(showOriginal ? 0 : 1, 1500, showOriginal ? null : function () { w.demo(300, 700); });
       toggle.textContent = showOriginal ? "Show Cerebro" : "Show original";
       toggle.setAttribute("aria-pressed", showOriginal ? "true" : "false");
     });
@@ -319,14 +320,16 @@
 
     info(A.find(current));
     if ("IntersectionObserver" in window) {
+      near(host, "900px", W);
       var started = false;
       new IntersectionObserver(function (en) {
         visible = en[0].isIntersecting;
         if (visible && !started) { started = true; run(); schedule_cycle(); }
       }, { threshold: .35 }).observe(host);
-    } else { win.setProgress(1); }
+    } else { W().setProgress(1); }
 
-    if (fine && !reduce) {
+    function bindTilt() {
+      if (!fine || reduce) return;
       var aw = win.el, stageEl = $(".apps-stage");
       stageEl.addEventListener("pointermove", function (e) {
         var r = stageEl.getBoundingClientRect();
@@ -340,6 +343,9 @@
   /* ---------------------------------------------------------- download core */
   (function downloadCore() {
     var c = $("#core-dl"); if (!c || !window.CerebroCore) return;
+    near(c, "700px", function () { makeDownloadCore(c); });
+  })();
+  function makeDownloadCore(c) {
     var base = { power: .55, env: 1.3, pulse: .2, dist: 4.9, yaw: -.34, pitch: -.26, halo: 1, zoom: .6, sweep: -3 };
     var k = window.CerebroCore(c, { mouse: true, fallback: "assets/core-512.png", state: base });
     var t0 = performance.now(), sweepAt = 0, next = 4000;
@@ -356,7 +362,7 @@
       item.addEventListener("pointerenter", function () { k.set({ power: 1.05, pulse: .6 }); });
       item.addEventListener("pointerleave", function () { k.set({ power: base.power, pulse: base.pulse }); });
     }
-  })();
+  }
 
   /* ---------------------------------------------------------- navigation */
   (function nav() {
@@ -385,6 +391,11 @@
   })();
 
   /* ---------------------------------------------------------- reveals */
+  function near(el, margin, fn) { // run fn once, shortly before el scrolls into view
+    if (!("IntersectionObserver" in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin + " 0px" });
+    io.observe(el);
+  }
   function once(el, threshold, fn) {
     if (!el) return;
     if (!("IntersectionObserver" in window)) { fn(); return; }
@@ -407,9 +418,8 @@
   (function philosophy() {
     var lines = $$("[data-words]");
     var data = lines.map(function (p) {
-      var words = p.textContent.trim().split(/\s+/);
-      p.setAttribute("aria-label", p.textContent.trim());
-      p.innerHTML = words.map(function (w) { return '<span class="w" aria-hidden="true">' + w + "</span>"; }).join(" ");
+      var text = p.textContent.trim(), words = text.split(/\s+/);
+      p.innerHTML = '<span class="sr-only">' + text + "</span>" + words.map(function (w) { return '<span class="w" aria-hidden="true">' + w + "</span>"; }).join(" ");
       return { el: p, w: $$(".w", p), lit: 0 };
     });
     if (reduce) { data.forEach(function (o) { o.w.forEach(function (w) { w.classList.add("lit"); }); }); return; }

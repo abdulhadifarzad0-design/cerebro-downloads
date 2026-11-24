@@ -261,7 +261,7 @@
     this.$pickTint.style.setProperty("--tint", app.tint);
     this.$pickName.textContent = app.name;
     this.$pickKind.textContent = app.kind;
-    this.$pickBtn.setAttribute("aria-label", "App: " + app.name + " (" + AVAIL[app.status] + "). Change app");
+    this.$pickBtn.setAttribute("aria-label", app.name + " " + app.kind + ", " + AVAIL[app.status] + ". Change app");
     this.$opts.forEach(function (o) { o.setAttribute("aria-selected", o.getAttribute("data-id") === app.id ? "true" : "false"); });
     this.$appTint.style.setProperty("--tint", app.tint);
     this.$appName.textContent = app.name;
@@ -639,7 +639,11 @@
 
   window.CerebroPlayground = { init: init, run: run };
 
-  function auto() { if (document.getElementById("pg-root")) init(); }
+  function auto() {
+    if (!document.getElementById("pg-root")) return;
+    if (location.hash || !("requestIdleCallback" in window)) init();
+    else requestIdleCallback(function () { init(); }, { timeout: 1500 });
+  }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto);
   else auto();
 })();

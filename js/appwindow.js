@@ -73,7 +73,7 @@
     var wsSt = root.querySelector(".aw-ws-st"), wsFoot = root.querySelector(".aw-ws-foot");
 
     var self = { el: root, app: null, goal: null, goalIndex: 0, t: 0, artState: 0, onStep: opts.onStep || null };
-    var chips = [], seen = 0, picks = [], ghosts = [], slots = [], artGroups = [], dims = { w: 1, h: 1 };
+    var chips = [], seen = 0, picks = [], ghosts = [], slots = [], artGroups = [], dims = { w: 1, h: 1 }, measuredOnce = false;
     var playRaf = 0;
 
     function fill(app) {
@@ -114,7 +114,7 @@
         }
         if (!found) { rg.tools.insertAdjacentHTML("beforeend", chip(label)); found = rg.tools.lastElementChild; }
         found.classList.add("pick");
-        return found;
+        return { el: found };
       });
       wsGoal.textContent = self.goal.goal;
       wsSteps.innerHTML = self.goal.steps.map(function (s, n) {
@@ -127,7 +127,7 @@
       }).join("");
       ghosts = Array.prototype.slice.call(ghostLayer.children);
       if (opts.interactive) slots.forEach(function (li, n) { li.firstChild.addEventListener("click", function () { useStep(n); }); });
-      measure();
+      if (measuredOnce) measure(); // the first measurement waits for the browser's own layout (ResizeObserver)
       setArt(0);
       root.classList.remove("ready");
       apply(self.t);
@@ -157,20 +157,15 @@
     function measure() {
       var compact = root.clientWidth > 0 && root.clientWidth < 600;
       if (compact !== root.classList.contains("aw-compact")) root.classList.toggle("aw-compact", compact);
+      // all layout reads first (visibility and transforms don't affect offsets), writes after
       dims.w = body.clientWidth || 1; dims.h = body.clientHeight || 1;
       chips = Array.prototype.slice.call(body.querySelectorAll(".aw-rg:not(.aw-canvas) .aw-c")).map(function (c) { var r = rel(c); return { el: c, y: r.y + r.h / 2 }; });
       chips.sort(function (a, b) { return a.y - b.y; });
+      picks = picks.map(function (p) { return p.el ? p : { el: p }; });
+      picks.forEach(function (p, i) { p.from = rel(p.el); var li = slots[i]; p.to = li ? rel(li) : p.from; });
       chips.forEach(function (c) { c.el.classList.remove("seen"); });
       seen = 0;
-      var keep = ws.style.display; ws.style.display = "flex";
-      picks = picks.map(function (p) { return p.el ? p : { el: p }; });
-      picks.forEach(function (p, i) {
-        var vis = p.el.style.visibility; p.el.style.visibility = "";
-        p.from = rel(p.el); p.el.style.visibility = vis;
-        var li = slots[i]; p.to = li ? rel(li) : p.from;
-        var g = ghosts[i]; if (g) { g.style.width = p.to.w + "px"; g.style.height = p.to.h + "px"; }
-      });
-      ws.style.display = keep;
+      picks.forEach(function (p, i) { var g = ghosts[i]; if (g) { g.style.width = p.to.w + "px"; g.style.height = p.to.h + "px"; } });
     }
 
     function apply(t) {
@@ -206,7 +201,7 @@
         var di = eio(clamp((d - i * stagger) / (1 - stagger * (n - 1))));
         var lifted = t >= .36;
         p.el.style.visibility = lifted ? "hidden" : "";
-        if (!g) return;
+        if (!g || !p.from) return; // not measured yet; the ResizeObserver will re-apply
         if (!lifted || di >= 1) { g.style.opacity = "0"; }
         else {
           var s0 = Math.max(.28, Math.min(1, p.from.w / Math.max(1, p.to.w)));
@@ -267,7 +262,8 @@
       }, 240);
     }
 
-    if ("ResizeObserver" in window) new ResizeObserver(function () { if (self.app) { measure(); apply(self.t); } }).observe(body);
+    if ("ResizeObserver" in window) new ResizeObserver(function () { if (self.app) { measuredOnce = true; measure(); apply(self.t); } }).observe(body);
+    else measuredOnce = true;
 
     self.setApp = setApp;
     self.setGoal = function (i) { self._demo = null; setGoal(i); };
@@ -277,7 +273,7 @@
     self.setArt = setArt;
     self.useStep = useStep;
     self.demo = demo;
-    self.measure = function () { measure(); apply(self.t); };
+    self.measure = function () { measuredOnce = true; measure(); apply(self.t); };
 
     fill(A.find(appId));
     setGoal(opts.goal || 0);

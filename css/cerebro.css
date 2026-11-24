@@ -281,6 +281,8 @@ section { position: relative; }
 .apps-tab small em.available { color: var(--ok); } .apps-tab small em.planned { color: #8fb7ff; } .apps-tab small em.concept { color: var(--dim); }
 .apps-stage { min-width: 0; }
 .apps-win { perspective: 2200px; }
+.apps-win:empty { aspect-ratio: 16 / 10; }
+@media (max-width: 640px) { .apps-win:empty { aspect-ratio: 10 / 13; } }
 .apps-win .aw { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .9s var(--ease); }
 .apps-info { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 20px 32px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
 .apps-k { display: block; margin-bottom: 8px; font: 500 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
@@ -295,8 +297,8 @@ section { position: relative; }
 .philo .wrap { max-width: 1180px; }
 .philo-line { margin: 0 0 clamp(70px, 14vh, 150px); font: 500 clamp(34px, 5.6vw, 92px)/1.02 var(--display); letter-spacing: -.045em; max-width: 17ch; text-wrap: balance; }
 .philo-line:nth-child(2) { margin-left: auto; text-align: right; }
-.philo-line .w { opacity: .13; transition: opacity .6s var(--ease), color .6s; }
-.philo-line .w.lit { opacity: 1; }
+.philo-line .w { color: #6a6a66; transition: color .7s var(--ease); }   /* unlit words still pass 3:1 for large text */
+.philo-line .w.lit { color: var(--ink); }
 .philo-end .w.lit { background: var(--chrome); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .philo-sign { display: flex; align-items: center; gap: 14px; margin: 0; font: 500 clamp(16px, 1.4vw, 20px)/1 var(--display); color: var(--muted); }
 .philo-sign svg { width: 26px; height: 26px; filter: drop-shadow(0 0 8px rgba(224,36,63,.6)); }

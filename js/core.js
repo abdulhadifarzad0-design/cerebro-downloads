@@ -104,29 +104,33 @@
       draw: function () { draw(); }
     };
 
-    if (!gl) {
-      if (opts.fallback) {
-        var img = new Image(); img.src = opts.fallback; img.alt = ""; img.className = canvas.className + " core-fallback";
-        img.setAttribute("aria-hidden", "true");
-        if (canvas.parentNode) canvas.parentNode.replaceChild(img, canvas);
-      }
-      return api;
+    function fallback() {
+      api.ok = false;
+      if (!opts.fallback || !canvas.parentNode) return;
+      var img = new Image(); img.src = opts.fallback; img.alt = ""; img.className = canvas.className + " core-fallback";
+      img.setAttribute("aria-hidden", "true");
+      canvas.parentNode.replaceChild(img, canvas);
     }
+    if (!gl) { fallback(); return api; }
 
-    function shader(type, src) {
-      var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.warn("[cerebro core]", gl.getShaderInfoLog(s)); return null; }
-      return s;
+    // Compile without blocking the page where the browser can do it in parallel.
+    var par = gl.getExtension("KHR_parallel_shader_compile");
+    var prog = gl.createProgram(), ready = false, U = {};
+    [[gl.VERTEX_SHADER, VERT], [gl.FRAGMENT_SHADER, FRAG]].forEach(function (s) {
+      var sh = gl.createShader(s[0]); gl.shaderSource(sh, s[1]); gl.compileShader(sh); gl.attachShader(prog, sh);
+    });
+    gl.linkProgram(prog);
+    function linked() {
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) { console.warn("[cerebro core]", gl.getProgramInfoLog(prog)); fallback(); return; }
+      gl.useProgram(prog);
+      var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      var loc = gl.getAttribLocation(prog, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      ["uRes", "uTime", "uPower", "uEnv", "uSweep", "uDist", "uHalo", "uPulse", "uYaw", "uPitch", "uZoom"].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+      ready = true;
+      resize(); draw();
     }
-    var prog = gl.createProgram();
-    var vs = shader(gl.VERTEX_SHADER, VERT), fs = shader(gl.FRAGMENT_SHADER, FRAG);
-    if (!vs || !fs) { api.ok = false; return api; }
-    gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog); gl.useProgram(prog);
-    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    var loc = gl.getAttribLocation(prog, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var U = {};
-    ["uRes", "uTime", "uPower", "uEnv", "uSweep", "uDist", "uHalo", "uPulse", "uYaw", "uPitch", "uZoom"].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+    function poll() { if (gl.getProgramParameter(prog, par.COMPLETION_STATUS_KHR)) linked(); else requestAnimationFrame(poll); }
 
     var running = false, wanted = false, visible = true, raf = 0, t0 = performance.now(), last = 0;
     var mouse = { x: 0, y: 0, sx: 0, sy: 0 };
@@ -144,6 +148,7 @@
     }
 
     function draw(now) {
+      if (!ready) return;
       now = now || performance.now();
       var time = (now - t0) / 1000;
       gl.uniform2f(U.uRes, canvas.width, canvas.height);
@@ -197,7 +202,7 @@
     if ("ResizeObserver" in window) new ResizeObserver(function () { resize(); if (!running) draw(); }).observe(canvas);
     canvas.addEventListener("webglcontextlost", function (e) { e.preventDefault(); running = false; });
 
-    resize(); draw();
+    if (par) { resize(); poll(); } else linked();
     return api;
   }
 

@@ -543,7 +543,7 @@
       section.classList.toggle("is-pinned", pinned);
       section.classList.toggle("is-stacked", !pinned);
       lastIdx = -1;
-      if (pinned) { setupCore(); if (core && core.ok) core.start(); }
+      if (pinned) { if (coreTried && core && core.ok) core.start(); } // the core itself is created lazily, see below
       else {
         if (core && core.ok) core.stop();
         items.forEach(function (li) { li.classList.remove("is-active", "is-done"); li.removeAttribute("aria-current"); });
@@ -554,6 +554,12 @@
 
     // visibility: the section (pinned) or each frame (stacked)
     if ("IntersectionObserver" in window) {
+      // create the WebGL core only when the section is about to scroll into view
+      var lazy = new IntersectionObserver(function (en) {
+        if (!en[0].isIntersecting || !pinned) return;
+        lazy.disconnect(); setupCore(); if (core && core.ok) core.start(); placeCore();
+      }, { rootMargin: "700px 0px" });
+      lazy.observe(section);
       new IntersectionObserver(function (en) { visible = en[0].isIntersecting; kick(); }, { rootMargin: "80px 0px" }).observe(section);
       var mio = new IntersectionObserver(function (en) {
         en.forEach(function (e) { var i = minis.indexOf(e.target); if (i >= 0) miniVisible[i] = e.isIntersecting; });
@@ -574,7 +580,10 @@
 
   function auto() {
     var s = document.getElementById("technology");
-    if (s) init(s);
+    if (!s) return;
+    // below the fold: build during idle time unless a link points into the page
+    if (location.hash || !("requestIdleCallback" in window)) init(s);
+    else requestIdleCallback(function () { init(s); }, { timeout: 1500 });
   }
   window.CerebroTech = { init: init };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", auto);
