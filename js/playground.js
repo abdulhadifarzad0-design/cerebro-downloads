@@ -94,7 +94,7 @@
       + '<form class="pg-command" novalidate>'
       + '<div class="pg-picker">'
       + '<button type="button" class="pg-picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="pg-app-list">'
-      + '<span class="pg-tint"></span><span class="pg-picker-text"><span class="pg-picker-name"></span><span class="pg-picker-kind"></span></span>' + CHEV + "</button>"
+      + '<span class="pg-tint"></span><span class="pg-picker-text"><span class="pg-picker-name"></span> <span class="pg-picker-kind"></span></span><span class="sr-only pg-picker-sr"></span>' + CHEV + "</button>"
       + '<ul class="pg-list" id="pg-app-list" role="listbox" tabindex="-1" aria-label="Choose an app" hidden>' + opts + "</ul>"
       + "</div>"
       + '<label class="sr-only" for="pg-input">What do you want to accomplish?</label>'
@@ -261,7 +261,8 @@
     this.$pickTint.style.setProperty("--tint", app.tint);
     this.$pickName.textContent = app.name;
     this.$pickKind.textContent = app.kind;
-    this.$pickBtn.setAttribute("aria-label", app.name + " " + app.kind + ", " + AVAIL[app.status] + ". Change app");
+    // the button's name is its visible text plus this hidden hint, so the two always match
+    this.$pickBtn.querySelector(".pg-picker-sr").textContent = ", " + AVAIL[app.status] + ". Change app";
     this.$opts.forEach(function (o) { o.setAttribute("aria-selected", o.getAttribute("data-id") === app.id ? "true" : "false"); });
     this.$appTint.style.setProperty("--tint", app.tint);
     this.$appName.textContent = app.name;
