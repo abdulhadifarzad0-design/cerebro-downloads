@@ -449,5 +449,89 @@
     });
   })();
 
+  /* ---------------------------------------------------------- downloads: OS detection + install guide
+     One app per OS. The visitor's OS gets the primary button, the other OS a
+     quiet link. Clicking either starts the download (a normal link) and opens
+     an install guide alongside it. ?os=mac|win|mobile|linux overrides detection. */
+  (function downloads() {
+    var get = $("#dl-get"), guide = $("#dl-guide");
+    if (!get) return;
+    var REL = "https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/latest/download/";
+    var size = function (k) { var el = $('[data-size="' + k + '"]', get); return el ? el.textContent : ""; };
+    var FILES = {
+      mac: { href: REL + "Cerebro-macOS-arm64.dmg", label: "Download Cerebro for Mac", nav: "Download for Mac", name: "Mac",
+        meta: 'macOS 13 or later · Apple Silicon · .dmg · <span data-size="mac">' + size("mac") + "</span>",
+        altMeta: '(macOS 13+ · Apple Silicon · .dmg · <span data-size="mac">' + size("mac") + "</span>)" },
+      win: { href: REL + "Cerebro-Windows-x64-Setup.exe", label: "Download Cerebro for Windows", nav: "Download for Windows", name: "Windows 10 and 11",
+        meta: 'Windows 10 and 11 · x64 · early access · .exe installer · <span data-size="win">' + size("win") + "</span>",
+        altMeta: '(x64 · early access · .exe installer · <span data-size="win">' + size("win") + "</span>)" }
+    };
+    function detect() {
+      var forced = /[?&]os=(mac|win|mobile|linux)\b/.exec(location.search);
+      if (forced) return forced[1];
+      var ua = navigator.userAgent || "";
+      var plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+      if (/android|iphone|ipad|ipod/i.test(ua) || (/mac/i.test(plat) && navigator.maxTouchPoints > 1)) return "mobile";
+      if (/win/i.test(plat) || /windows/i.test(ua)) return "win";
+      if (/mac/i.test(plat) || /mac os/i.test(ua)) return "mac";
+      if (/linux|cros/i.test(plat + " " + ua)) return "linux";
+      return "mac";
+    }
+    // Flip to true once Cerebro-Windows-x64-Setup.exe is attached to the latest release.
+    var WIN_READY = false;
+    var os = detect(), primary = os === "win" && WIN_READY ? "win" : "mac", other = primary === "mac" ? "win" : "mac";
+    get.setAttribute("data-os", os);
+    var btn = $("#dl-primary"), alt = $("#dl-alt-link"), mobile = $("#dl-mobile");
+    btn.href = FILES[primary].href; btn.setAttribute("data-file", primary);
+    $("#dl-primary-label").textContent = FILES[primary].label;
+    $("#dl-primary-meta").innerHTML = FILES[primary].meta;
+    alt.href = FILES[other].href; alt.setAttribute("data-file", other); alt.textContent = FILES[other].name;
+    $("#dl-alt-meta").innerHTML = FILES[other].altMeta;
+    if (!WIN_READY) { // never link to a file that isn't published yet
+      alt.parentNode.textContent = "Cerebro for Windows 10 and 11 is in final testing and will appear here when it passes.";
+    }
+    if (os === "win" && !WIN_READY) {
+      get.classList.add("is-mobile"); mobile.hidden = false;
+      mobile.textContent = "Cerebro for Windows is in final testing and will be downloadable here soon. The download below is for Mac.";
+    } else if (os === "mobile") {
+      get.classList.add("is-mobile"); mobile.hidden = false;
+    } else if (os === "linux") {
+      mobile.hidden = false;
+      mobile.textContent = "Cerebro isn’t available for Linux yet. These downloads are for Mac and Windows.";
+    }
+    if (os === "mac" || (os === "win" && WIN_READY)) {
+      var navLabel = $("#nav-cta-label"); if (navLabel && matchMedia("(min-width: 980px)").matches) navLabel.textContent = FILES[os].nav;
+      var hero = $("#hero-cta"); if (hero) hero.setAttribute("aria-label", "Activate Cerebro: " + FILES[os].label.toLowerCase());
+    }
+
+    if (!guide) return;
+    function openGuide(file) {
+      $$("[data-guide]", guide).forEach(function (b) { b.hidden = b.getAttribute("data-guide") !== file; });
+      if (typeof guide.showModal === "function") { if (!guide.open) guide.showModal(); }
+      else guide.setAttribute("open", "");
+    }
+    function closeGuide() { if (typeof guide.close === "function") guide.close(); else guide.removeAttribute("open"); }
+    get.addEventListener("click", function (e) {
+      var a = e.target.closest("a[data-file]");
+      if (!a) return;
+      // The link itself downloads; the guide opens alongside it.
+      setTimeout(function () { openGuide(a.getAttribute("data-file")); }, 60);
+    });
+    $$("[data-close]", guide).forEach(function (b) { b.addEventListener("click", closeGuide); });
+    guide.addEventListener("keydown", function (e) { // keep Tab inside the guide (the native dialog lets it reach the browser UI)
+      if (e.key !== "Tab") return;
+      var f = $$('button, a[href], [tabindex]:not([tabindex="-1"])', guide).filter(function (el) { return el.offsetParent !== null; });
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && d.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && d.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    guide.addEventListener("click", function (e) { // a click on the backdrop, not the dialog's padding
+      if (e.target !== guide) return;
+      var r = guide.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeGuide();
+    });
+  })();
+
   schedule();
 })();

@@ -76,7 +76,8 @@
       <a href="#applications" data-nav="applications">Applications</a>
       <span class="nav-ind" aria-hidden="true"></span>
     </nav>
-    <a class="nav-cta" href="#download"><span>Download</span></a>
+    <a class="nav-social" href="https://www.linkedin.com/company/cerebroapp/" target="_blank" rel="noopener noreferrer" aria-label="Cerebro on LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a>
+    <a class="nav-cta" href="#download" id="nav-cta"><span id="nav-cta-label">Download</span></a>
     <button class="nav-menu" id="nav-menu" type="button" aria-expanded="false" aria-controls="nav-sheet"><span class="sr-only">Menu</span><i></i><i></i></button>
   </div>
   <div class="nav-sheet" id="nav-sheet" hidden>
@@ -84,6 +85,7 @@
     <a href="#technology">Technology</a>
     <a href="#applications">Applications</a>
     <a href="#download">Download</a>
+    <a class="sheet-social" href="https://www.linkedin.com/company/cerebroapp/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
   </div>
 </header>
 
@@ -105,7 +107,7 @@
         <p class="xp-slogan">One intelligence. Every interface.</p>
         <p class="xp-desc">Cerebro understands the software you use and transforms complicated interfaces into focused workspaces built around what you want to accomplish.</p>
         <div class="xp-ctas">
-          <a class="btn btn-primary" href="#download"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
+          <a class="btn btn-primary" href="#download" id="hero-cta"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
           <a class="btn" href="#playground">Experience the demo <span class="arrow" aria-hidden="true">→</span></a>
         </div>
       </div>
@@ -251,11 +253,11 @@
           </div>
           <div class="road reveal">
             <h3><i class="exp"></i>Experimental</h3>
-            <ul><li>AI planning with your own Anthropic key: built in, not yet proven at scale</li><li>Pages and Keynote: controls work, but canvas changes can’t be verified yet</li><li>Web apps whose menus ignore automation, like Photopea’s, fall back to guidance</li></ul>
+            <ul><li>AI planning with your own Anthropic key: built in, not yet proven at scale</li><li>Pages and Keynote: controls work, but canvas changes can’t be verified yet</li><li>Web apps whose menus ignore automation, like Photopea’s, fall back to guidance</li><li>Windows 10 and 11: in final testing</li></ul>
           </div>
           <div class="road reveal">
             <h3><i class="next"></i>Coming next</h3>
-            <ul><li>Windows and Linux</li><li>Plugins for DaVinci Resolve and Adobe apps</li><li>Screen understanding for apps with hidden controls</li><li>Remembered layouts and preferences</li><li>A signed, notarized Mac app</li></ul>
+            <ul><li>Linux</li><li>Plugins for DaVinci Resolve and Adobe apps</li><li>Screen understanding for apps with hidden controls</li><li>Remembered layouts and preferences</li><li>A signed, notarized Mac app</li></ul>
           </div>
         </div>
       </div>
@@ -313,41 +315,75 @@
         <canvas class="core-canvas" id="core-dl"></canvas>
       </div>
       <div class="dl-main">
-        <p class="status reveal"><i></i>Early access · v0.1.0</p>
+        <p class="status reveal"><i></i>Early access · v0.2.0</p>
         <h2 id="dl-title" class="reveal">Meet your new <span class="chrome-text">interface.</span></h2>
-        <p class="dl-lede reveal">Start with the Mac app. Add the Chrome extension for web apps and the Blender plugin for 3D work.</p>
-        <ol class="dl-list">
-          <li class="dl-item primary reveal">
-            <div class="dl-top">
-              <div><h3>Cerebro for Mac</h3><p class="dl-meta">macOS · Apple Silicon · 114 MB</p></div>
-              <a class="btn btn-primary" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-macOS-arm64.zip" rel="noopener"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg>Activate Cerebro</a>
-            </div>
-            <p>The floating Cerebro panel. Works with Numbers, Pages, Keynote, TextEdit and most other Mac apps.</p>
-            <details><summary>How to install</summary><ol><li>Unzip and move Cerebro to Applications.</li><li>Open it. If macOS says it can’t verify Cerebro, click Done, then open System Settings › Privacy &amp; Security and click Open Anyway.</li><li>Allow Accessibility when Cerebro asks.</li></ol></details>
-          </li>
-          <li class="dl-item reveal">
-            <div class="dl-top">
-              <div><h3>Chrome extension</h3><p class="dl-meta">Chrome, Brave, Edge · 180 KB</p></div>
-              <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/Cerebro-Chrome-Extension.zip" rel="noopener">Download .zip</a>
-            </div>
-            <p>Simplifies web apps like Excalidraw and Photopea right on the page.</p>
-            <details><summary>How to install</summary><ol><li>Unzip the file.</li><li>Open <code>chrome://extensions</code> and turn on Developer mode.</li><li>Click Load unpacked and choose the folder.</li></ol></details>
-          </li>
-          <li class="dl-item reveal">
-            <div class="dl-top">
-              <div><h3>Blender plugin</h3><p class="dl-meta">Blender 4.2 or later · 6 KB</p></div>
-              <a class="btn" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/download/v0.1.0/cerebro_bridge-0.1.0.zip" rel="noopener">Download .zip</a>
-            </div>
-            <p>Gives Cerebro direct, verified control of Blender’s own operations.</p>
-            <details><summary>How to install</summary><ol><li>In Blender, open Edit › Preferences.</li><li>Choose Get Extensions › Install from Disk.</li><li>Pick the downloaded .zip.</li></ol></details>
-          </li>
-        </ol>
-        <div class="platforms reveal">
-          <p><span class="pill available">Available</span>macOS on Apple Silicon · Chrome, Brave and Edge · Blender 4.2+</p>
-          <p><span class="pill concept">Coming later</span>Windows · Linux</p>
+        <p class="dl-lede reveal">One download. Everything Cerebro needs is inside it.</p>
+
+        <!-- One app per OS. js/main.js (downloads block) picks the visitor's OS and opens the install guide. -->
+        <div class="dl-get reveal" id="dl-get" data-os="mac">
+          <div class="dl-get-row">
+            <a class="btn btn-primary dl-btn" id="dl-primary" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/latest/download/Cerebro-macOS-arm64.dmg" data-file="mac"><svg class="btn-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><span id="dl-primary-label">Download Cerebro for Mac</span></a>
+            <p class="dl-get-meta" id="dl-primary-meta">macOS 13 or later · Apple Silicon · .dmg · <span data-size="mac">≈ 115 MB</span></p>
+          </div>
+          <p class="dl-alt" id="dl-alt">Also for <a id="dl-alt-link" href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/latest/download/Cerebro-Windows-x64-Setup.exe" data-file="win">Windows 10 and 11</a> <span class="dl-alt-meta" id="dl-alt-meta">(x64 · early access · .exe installer · <span data-size="win">size varies</span>)</span></p>
+          <p class="dl-mobile" id="dl-mobile" hidden>Cerebro is a desktop app for Mac and Windows. Open this page on your computer to download it.</p>
         </div>
-        <p class="dl-note reveal">Cerebro is an early build and isn’t notarized by Apple yet, which is why macOS asks you to approve it once in Privacy &amp; Security. It needs the Accessibility permission to read and press controls in Mac apps. For AI-designed workspaces, paste your own Anthropic API key in Cerebro › Settings; without one, Cerebro plans offline.</p>
+
+        <ul class="dl-included reveal" aria-label="What’s included">
+          <li><b>Blender</b><span>Set up from inside Cerebro on first launch: one click, installed through Blender’s own extension installer.</span></li>
+          <li><b>Chrome, Brave, Edge</b><span>Cerebro guides you through the one-time step Chrome requires to add its extension.</span></li>
+          <li><b>Desktop apps</b><span>Understood through the operating system’s accessibility interface. On a Mac, after you allow it.</span></li>
+        </ul>
+
+        <div class="platforms reveal">
+          <p><span class="pill available">Available</span>macOS 13+ on Apple Silicon · Chrome, Brave and Edge · Blender 4.2+</p>
+          <p><span class="pill concept">Coming next</span>Windows 10 and 11 (in final testing) · Linux</p>
+        </div>
+
+        <details class="dl-adv reveal">
+          <summary>Advanced: install components manually</summary>
+          <p>For IT teams and offline setups. Most people don’t need these, because Cerebro installs them for you.</p>
+          <ul>
+            <li>
+              <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/latest/download/Cerebro-Chrome-Extension.zip">Chrome extension (.zip)</a>
+              <ol><li>Unzip the file.</li><li>Open <code>chrome://extensions</code> and turn on Developer mode.</li><li>Click Load unpacked and choose the folder.</li></ol>
+            </li>
+            <li>
+              <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads/releases/latest/download/cerebro_bridge.zip">Blender add-on (.zip)</a>
+              <ol><li>In Blender 4.2 or later, open Edit › Preferences.</li><li>Choose Get Extensions › Install from Disk.</li><li>Pick the downloaded .zip.</li></ol>
+            </li>
+          </ul>
+        </details>
+
+        <p class="dl-note reveal">Cerebro is an early build. The Mac app isn’t notarized by Apple yet and the Windows installer isn’t code-signed yet, so your computer asks you to confirm it once; the install guide shows exactly how. On a Mac, Cerebro needs the Accessibility permission to read and press controls. For AI-designed workspaces, paste your own Anthropic API key in Cerebro › Settings; without one, Cerebro plans offline.</p>
       </div>
+
+      <dialog class="install-guide" id="dl-guide" aria-labelledby="guide-title">
+        <div class="guide-head">
+          <p class="status"><i></i>Install guide</p>
+          <button class="guide-x" type="button" data-close aria-label="Close install guide">×</button>
+        </div>
+        <h3 id="guide-title">Your download has started.</h3>
+        <div class="guide-body" data-guide="mac">
+          <ol>
+            <li><b>Open the installer.</b> Open <code>Cerebro-macOS-arm64.dmg</code> from your Downloads.</li>
+            <li><b>Drag Cerebro into Applications,</b> then open it from your Applications folder.</li>
+            <li><b>If macOS says it can’t verify Cerebro,</b> click Done. Open System Settings › Privacy &amp; Security, scroll to “Cerebro was blocked to protect your Mac”, click Open Anyway and confirm with your password or Touch ID. You only do this once.</li>
+            <li><b>Allow Accessibility</b> when Cerebro asks, so it can read and press controls in your apps. Cerebro sets up Blender and Chrome support from there.</li>
+          </ol>
+          <p class="guide-why">Why the warning? Cerebro is an early build that isn’t notarized by Apple yet. Until it is, macOS asks you to confirm it the first time you open it.</p>
+        </div>
+        <div class="guide-body" data-guide="win" hidden>
+          <ol>
+            <li><b>Run the installer.</b> Open <code>Cerebro-Windows-x64-Setup.exe</code> from your Downloads.</li>
+            <li><b>If Windows says “Windows protected your PC”,</b> click More info, then Run anyway.</li>
+            <li><b>Follow the installer.</b> It adds Cerebro to the Start menu and your desktop, then opens Cerebro.</li>
+            <li><b>To remove Cerebro,</b> use Settings › Apps › Installed apps › Cerebro › Uninstall.</li>
+          </ol>
+          <p class="guide-why">Why the warning? Cerebro is an early build whose installer isn’t code-signed yet, so Microsoft Defender SmartScreen asks you to confirm it.</p>
+        </div>
+        <div class="guide-actions"><button class="btn" type="button" data-close>Done</button></div>
+      </dialog>
     </div>
   </section>
 </main>
@@ -359,9 +395,10 @@
       <a class="nav-brand" href="#top" aria-label="Cerebro, back to top"><svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true"><use href="#mark"/></svg><img src="assets/wordmark.png" width="811" height="133" alt=""></a>
       <nav aria-label="Footer">
         <a href="#download">Download</a>
-        <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/company/cerebroapp/" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/abdulhadifarzad0-design/cerebro-downloads" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/company/cerebroapp/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
       </nav>
+      <div class="foot-social"><a href="https://www.linkedin.com/company/cerebroapp/" target="_blank" rel="noopener noreferrer" aria-label="Cerebro on LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg></a></div>
       <span class="foot-meta">© 2026 Cerebro · Early access</span>
     </div>
   </div>

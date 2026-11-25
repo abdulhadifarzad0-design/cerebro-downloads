@@ -447,3 +447,68 @@ section { position: relative; }
   .xp-ctas .btn { width: 100%; }
   .dl-top .btn { width: 100%; }
 }
+
+/* ------------------------------------------------------------ downloads, install guide, social links (distribution) */
+.nav-social { display: inline-grid; place-items: center; width: 36px; height: 36px; margin-left: 4px; border-radius: 50%; color: var(--muted); transition: color .3s var(--ease), background .3s var(--ease); }
+.nav-social svg { width: 15px; height: 15px; }
+.nav-social:hover { color: var(--ink); background: rgba(255,255,255,.05); }
+.sheet-social { font-size: 16px !important; color: var(--muted); }
+.foot-social { display: flex; gap: 8px; }
+.foot-social a { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-2); color: var(--muted); transition: color .3s, border-color .3s, box-shadow .4s var(--ease); }
+.foot-social a:hover { color: var(--ink); border-color: rgba(224,36,63,.5); box-shadow: 0 0 20px -6px rgba(224,36,63,.6); }
+.foot-social svg { width: 15px; height: 15px; }
+
+.dl-get { display: grid; gap: 14px; padding: 26px 0 24px; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line); }
+.dl-get-row { display: flex; align-items: center; gap: 16px 22px; flex-wrap: wrap; }
+.dl-btn { min-height: 54px; padding: 0 26px; font-size: 16px; }
+.dl-get-meta { margin: 0; font: 500 11.5px/1.5 var(--mono); letter-spacing: .04em; color: var(--dim); }
+.dl-alt { margin: 0; font-size: 14.5px; color: var(--muted); }
+.dl-alt a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(224,36,63,.55); padding-bottom: 1px; transition: border-color .3s, color .3s; }
+.dl-alt a:hover { border-color: var(--red-hi); }
+.dl-alt-meta { color: var(--dim); font-size: 13px; }
+.dl-mobile { margin: 0; font-size: 15px; color: var(--muted); }
+.dl-get.is-mobile .dl-get-row, .dl-get.is-mobile .dl-alt { display: none; }
+.dl-included { list-style: none; margin: 0; padding: 0; display: grid; }
+.dl-included li { display: grid; grid-template-columns: 170px 1fr; gap: 4px 18px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.dl-included b { font: 500 15px/1.4 var(--display); letter-spacing: -.01em; color: var(--ink); }
+.dl-included span { color: var(--muted); }
+.dl-adv { font-size: 14px; color: var(--muted); }
+.dl-adv summary { cursor: pointer; width: fit-content; list-style: none; display: inline-flex; align-items: center; gap: 8px; color: var(--dim); font-size: 13.5px; padding: 4px 0; transition: color .3s; }
+.dl-adv summary:hover { color: var(--ink); }
+.dl-adv summary::-webkit-details-marker { display: none; }
+.dl-adv summary::after { content: "+"; font: 400 15px/1 var(--mono); color: var(--red-hi); transition: transform .4s var(--ease); }
+.dl-adv[open] summary::after { transform: rotate(45deg); }
+.dl-adv > p { margin: 10px 0 12px; max-width: 60ch; }
+.dl-adv ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.dl-adv li > a { color: var(--ink); font-weight: 500; }
+.dl-adv ol { margin: 6px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+.dl-adv code { font: 500 12.5px/1 var(--mono); background: var(--raised-2); padding: 2px 6px; border-radius: 6px; color: var(--ink); }
+
+.install-guide { width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 40px); overflow: auto; padding: 26px 28px 24px; border-radius: 24px; border: 1px solid rgba(255,255,255,.1); color: var(--ink);
+  background: linear-gradient(180deg, rgba(22,22,26,.97), rgba(11,11,13,.98)); box-shadow: 0 40px 120px -30px rgba(0,0,0,.95), inset 0 1px 0 rgba(255,255,255,.06), 0 0 80px -30px rgba(224,36,63,.45); }
+.install-guide::backdrop { background: rgba(3,3,4,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.install-guide[open] { animation: guideIn .5s var(--ease); }
+@keyframes guideIn { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+.guide-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.guide-x { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: none; color: var(--muted); font-size: 20px; line-height: 1; }
+.guide-x:hover { color: var(--ink); border-color: rgba(224,36,63,.5); }
+.install-guide h3 { margin: 0 0 16px; font: 600 26px/1.1 var(--display); letter-spacing: -.035em; }
+.install-guide ol { margin: 0; padding: 0; list-style: none; counter-reset: gs; display: grid; gap: 14px; }
+.install-guide li { counter-increment: gs; position: relative; padding-left: 32px; font-size: 15px; color: var(--muted); line-height: 1.55; }
+.install-guide li::before { content: counter(gs, decimal-leading-zero); position: absolute; left: 0; top: 0; font: 500 11px/2.1 var(--mono); color: var(--red-hi); }
+.install-guide li b { color: var(--ink); font-weight: 500; }
+.install-guide code { font: 500 12.5px/1 var(--mono); background: var(--raised-2); padding: 2px 6px; border-radius: 6px; color: var(--ink); }
+.guide-why { margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--dim); }
+.guide-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+
+/* the download visual is sticky beside the text on desktop only */
+@media (max-width: 980px) { .dl-visual { position: relative; top: auto; } }
+/* pre-existing: the privacy list's grid tracks grew to their content's min width on narrow screens */
+.guards li { grid-template-columns: 44px minmax(0, 1fr); }
+@media (max-width: 760px) {
+  .guards { grid-template-columns: minmax(0, 1fr); }
+  .nav-social { display: none; }
+  .dl-included li { grid-template-columns: 1fr; }
+  .dl-btn { width: 100%; }
+  .install-guide { padding: 22px 20px; }
+}
